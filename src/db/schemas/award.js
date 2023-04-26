@@ -7,6 +7,7 @@ const AwardSchema = new Schema(
       type: String,
       required: true,
       default: () => nanoid(),
+      index: true,
     },
     title: {
       type: String,
