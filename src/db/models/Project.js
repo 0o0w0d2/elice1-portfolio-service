@@ -2,14 +2,13 @@ import { ProjectModel } from '../schemas/project';
 
 
 // 프로젝트 생성
-export const createProject = async ({userId, title, startDate, endDate, description, url, projectId}) => {
+export const createProject = async ({ userId, title, startDate, endDate, description, projectId }) => {
     const createdNewProject = await ProjectModel.create({
         userId,
         title,
         startDate, 
         endDate, 
         description, 
-        url, 
         projectId,
     });
     return createdNewProject;
@@ -29,9 +28,8 @@ export const findProjectByProjectId = async (projectId) => {
 export const updateProject = async ({ projectId, updateValues }) => {
     // 프로젝트아이디를 통해서 값을 찾아서 그 값을 변경
     // updateOne 사용
-    const updatedProject = await ProjectModel.updateOne({ projectId }, 
-        { $set: updateValues });   // mongodb 쿼리파라미터? 중 값을 바꾸기 위해서 $set: 뒤에 바꿀 값
-
+    const updatedProject = await ProjectModel.findOneAndUpdate({ projectId }, 
+        { updateValues });  // 이 부분은 더 알아보도록
     return updatedProject;
 };
 
@@ -39,7 +37,8 @@ export const updateProject = async ({ projectId, updateValues }) => {
 export const deleteProject = async (projectId) => {
     // 프로젝트아이디를 통해서 값을 찾아서 그 값을 삭제
     // deleteOne 사용
-    const deletedProject = await ProjectModel.deleteOne({ projectId });
+    const deletedProject = await ProjectModel.findOneAndDelete({ projectId });
+            // 이 부분도 더 알아보도록...
     
     return deletedProject;
 };
