@@ -6,7 +6,7 @@ const UserSchema = new Schema(
     id: {
       type: String,
       required: true,
-      default:()=>nanoid(),
+      default: () => nanoid(),
     },
     email: {
       type: String,
