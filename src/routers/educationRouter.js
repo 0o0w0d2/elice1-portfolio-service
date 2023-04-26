@@ -7,10 +7,10 @@ const educationRouter = Router();
 // 기본적으로 유저 아이디 URI로 라우팅, 본인이든 다른 유저이든
 // 변수명이 userId 인 이유는 각 education마다 id속성이 있기때문에 구분하기 위해
 educationRouter.get(
-    '/education/:userId',
+    '/education',
     login_required,
     asyncHandler( async (req, res, next)=>{
-        const { userId } = req.params;
+        const userId = req.currentUserId;
         const educationList = await educationService.getEducation({userId});
         if (educationList.errorMessage){
             throw new Error(educationList.errorMessage);
@@ -20,13 +20,11 @@ educationRouter.get(
 );
 // 학력 추가는 post 메소드로 /add 로 보냄. education = {UserId,학교명,전공,졸업상태}
 educationRouter.post(
-    '/education/:userId/add',
+    '/education',
     login_required,
     asyncHandler(async (req, res, next)=>{
-        const { userId } = req.params;
-        if(userId != req.currentUserId){
-            throw new Error('권한이 없습니다');
-        };
+        console.log("get요청 들어옴");
+        const userId = req.currentUserId;
         const { schoolName, major, graduationTypeCode } = req.body;
         const education = { userId, schoolName, major, graduationTypeCode };
         const addNewEducation = await educationService.addEducation({education});
@@ -35,13 +33,9 @@ educationRouter.post(
 );
 // 변경은 put 메소드로 /edit 으로 education = { _id(학력),학교명,전공,졸업상태}
 educationRouter.patch(
-    '/education/:userId/edit',
+    '/education',
     login_required,
     asyncHandler(async (req, res, next)=>{
-        const { userId } = req.params;
-        if(userId != req.currentUserId){
-            throw new Error('권한이 없습니다');
-        };
         const { _id, schoolName, major, graduationTypeCode } = req.body;
         const education = { _id, schoolName, major, graduationTypeCode };
         const editEducation = await educationService.editEducation({education});
@@ -53,13 +47,9 @@ educationRouter.patch(
 );
 // 삭제는 delete 메소드로 /delete 로
 educationRouter.delete(
-    '/education/:userId/delete',
+    '/education',
     login_required,
     asyncHandler(async (req, res, next)=>{
-        const { userId } = req.params;
-        if(userId != req.currentUserId){
-            throw new Error('권한이 없습니다');
-        };
         const { _id } = req.body;
         const deleteEducation = await educationService.removeEducation({_id});
         if (deleteEducation.errorMessage){
