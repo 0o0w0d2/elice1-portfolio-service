@@ -12,7 +12,7 @@ export const createProject = async ({ userId, title, startDate, endDate, descrip
         projectId,
     });
     return createdNewProject;
-}
+};
 
 // id에 맞는 프로젝트 전체 조회
 export const findProjectById = async (id) => {
