@@ -17,6 +17,6 @@ function validate_user_resource(Model) {
 
 // 아래 하나씩 정의하고, export!
 const validate_user_award = validate_user_resource(AwardModel);
-// console.log(validate_user_award);
+console.log(validate_user_award);
 
 export { validate_user_resource, validate_user_award };
