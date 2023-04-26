@@ -1,8 +1,8 @@
 import { Schema, model } from 'mongoose';
 
 const ProjectSchema = new Schema({
-    userId: {      // 유저에 대한 고유값     은 수정이 필요할거 같은데 
-        type: Number,
+    userId: {      // 유저에 대한 고유값
+        type: String,
         required: true,
     },               
     title: {       // 프로젝트 이름
