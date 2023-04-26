@@ -1,9 +1,10 @@
 import { Schema, model } from 'mongoose';
 
 const ProjectSchema = new Schema({
-    id,            // shortId 대신 id값이라고 씀 nanoid를 통해서 만들어진 값
-                // 이게 근데 유저를 나타내는 고유값이 되어야해서 모든 파일에서 다
-                // 똑같아야 하는데 .. 흠 모르겠는걸 잘 이해가 안댐
+    userId: {      // 유저에 대한 고유값     은 수정이 필요할거 같은데 
+        type: Number,
+        required: true,
+    },               
     title: {       // 프로젝트 이름
         type: String,
         required: true,
@@ -30,4 +31,4 @@ const ProjectSchema = new Schema({
 
 const ProjectModel = model('Project', ProjectSchema);
 
-export { ProjectModel }
+export { ProjectModel };
