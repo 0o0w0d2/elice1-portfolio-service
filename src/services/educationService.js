@@ -18,16 +18,16 @@ class educationService {
     static async editEducation({education}){
         const editedEducation = await Education.edit({education});
         if(!editedEducation){
-            const errorMessage = '해당 학력 사항이 없습니다.';
+            const errorMessage = '권한이 없거나 해당 학력 사항이 없습니다.';
             return { errorMessage };
         };
         return editedEducation;
     }
 
-    static async removeEducation({_id}){
-        const removedEducation = await Education.remove({_id});
+    static async removeEducation({ _id, userId }){
+        const removedEducation = await Education.remove({ _id, userId });
         if(!removedEducation){
-            const errorMessage = '해당 학력 사항이 없습니다.';
+            const errorMessage = '권한이 없거나 해당 학력 사항이 없습니다.';
             return { errorMessage };
         };
         return removedEducation;

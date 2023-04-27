@@ -16,14 +16,14 @@ class Education {
 
     static async edit({education}){
         // 여기 education은 _id 포함
-        const { _id, schoolName, major, graduationTypeCode } = education;
-        const editEducation = await EducationModel.findOneAndUpdate({_id},{ schoolName, major, graduationTypeCode });
+        const { userId, _id, schoolName, major, graduationTypeCode } = education;
+        const editEducation = await EducationModel.findOneAndUpdate({ _id, userId },{ schoolName, major, graduationTypeCode },{new:true});
         return editEducation;
     }
 
-    static async remove({_id}){
-        // 삭제는 _id 값만 받아와서 제거
-        const removeEducation = await EducationModel.findOneAndDelete({_id});
+    static async remove({ _id, userId }){
+        // 삭제는 _id 와 userId값을 받아와 삭제
+        const removeEducation = await EducationModel.findOneAndDelete({ _id, userId });
         return removeEducation;
     }
 }
