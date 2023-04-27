@@ -8,22 +8,21 @@ const getProjectById = (userId) => {
 }
 
 // projectId를 통해 프로젝트 조회
-const getProjectByProjectId = (projectId) => {
+const getProjectByProjectId = (_id) => {
     
-    return Project.findProjectByProjectId(projectId)
+    return Project.findProjectByProjectId(_id)
 }
 
 
 // 프로젝트 생성
-const addProject = async ({ userId, title, startDate, endDate, description, projectId }) => {
+const addProject = async ({ userId, title, startDate, endDate, description }) => {
 
     const newProject = await Project.createProject({
         userId,
         title, 
         startDate, 
         endDate, 
-        description, 
-        projectId
+        description,
     });
 
     return newProject;
@@ -32,7 +31,7 @@ const addProject = async ({ userId, title, startDate, endDate, description, proj
 
 
 // 프로젝트 수정
-const editProject = async ({ projectId, updateValues }) => {
+const editProject = async ({ _id, updateValues }) => {
 
     const { title, startDate, endDate, description } = updateValues;
 
@@ -43,15 +42,15 @@ const editProject = async ({ projectId, updateValues }) => {
         description,
     }
 
-    return Project.updateProject( { projectId, editValues } )
+    return Project.updateProject( { _id, editValues } )
 }
 
 
 // 프로젝트 삭제
-const delProject = async (projectId) => {
+const delProject = async (_id) => {
     
 
-    return Project.deleteProject(projectId)
+    return Project.deleteProject(_id)
 };
 
 export default { getProjectById, getProjectByProjectId, addProject, editProject, delProject };
