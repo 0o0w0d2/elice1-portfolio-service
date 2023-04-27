@@ -81,7 +81,7 @@ projectRouter.patch('/:projectId', login_required, asyncHandler(async (req, res)
 projectRouter.delete('/:projectId', login_required, asyncHandler(async (req, res) => {
     
     const projectId = req.params.projectId;
-    const userId = currentUserId;
+    const userId = req.currentUserId;
     const project = projectService.getProjectByProjectId(projectId);
 
     if (userId !== project.userId) { 
