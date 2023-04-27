@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login_required } from 'express';
+import { login_required } from '../middlewares/login_required';
 import projectService from '../services/projectService';
 import asyncHandler from '../utils/asyncHandler';
 
