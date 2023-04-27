@@ -1,56 +1,45 @@
-import Project from '../db/models/Project';
+import { Project } from '../db';
 
-
-// id를 통해 프로젝트 전체 조회
-const getProjectById = (userId) => {
-    
-    return Project.findProjectById(userId);
-}
-
-// projectId를 통해 프로젝트 조회
-const getProjectByProjectId = (_id) => {
-    
-    return Project.findProjectByProjectId(_id)
-}
-
-
-// 프로젝트 생성
-const addProject = async ({ userId, title, startDate, endDate, description }) => {
-
-    const newProject = await Project.createProject({
-        userId,
-        title, 
-        startDate, 
-        endDate, 
-        description,
-    });
-
-    return newProject;
-
-}
-
-
-// 프로젝트 수정
-const editProject = async ({ _id, updateValues }) => {
-
-    const { title, startDate, endDate, description } = updateValues;
-
-    const editValues = {
-        title,
-        startDate,
-        endDate,
-        description,
+class projectService {
+    static async getProject({ userId }){
+        const projectList = await Project.findByUserId({userId});
+        
+        if(!projectList.length){
+            const errorMessage = '프로젝트가 없습니다.';
+            return { errorMessage };
+        };
+        
+        return projectList;
     }
 
-    return Project.updateProject( { _id, editValues } )
-}
+    static async addProject({ project }){
+        const newProject = await Project.add({ project });
+        
+        return newProject;
+    }
 
+    static async editProject({ project }){
+        const editedProject = await Project.edit({ project });
+        
+        if(!editedProject){
+            const errorMessage = '권한이 없습니다.';
+            return { errorMessage };
+        };
+        
+        return editedProject;
+    }
 
-// 프로젝트 삭제
-const delProject = async (_id) => {
-    
+    static async removeProject({ _id, userId }){
+        const removedProject = await Project.remove({ _id, userId });
+        
+        if(!removedProject){
+            const errorMessage = '권한이 없습니다.';
+            return { errorMessage };
+        };
+        
+        return removedProject;
+    }
 
-    return Project.deleteProject(_id)
 };
 
-export default { getProjectById, getProjectByProjectId, addProject, editProject, delProject };
+export { projectService };

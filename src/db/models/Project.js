@@ -1,42 +1,34 @@
 import { ProjectModel } from '../schemas/project';
 
+class Project {
+    static async findByUserId({userId}){
 
-// 프로젝트 생성
-const createProject = async ({ userId, title, startDate, endDate, description }) => {
-    const createdNewProject = await ProjectModel.create({
-        userId,
-        title,
-        startDate, 
-        endDate, 
-        description, 
-    });
-    return createdNewProject;
-};
+        const projectList = await ProjectModel.find({userId});
+        
+        return projectList;
+    }
 
-// id에 맞는 프로젝트 전체 조회
-const findProjectById = async ( userId ) => {
-    return await ProjectModel.find({ userId });
-};
+    static async add({project}){
+        const newProject = await  ProjectModel.create(project);
+        
+        return newProject;
+    }
 
-// projectId를 통해 프로젝트 조회
-const findProjectByProjectId = async (_id) => {
-    return await ProjectModel.findOne({ _id });
-};
 
-// projectId를 통해 프로젝트 수정             
-const updateProject = async ({ _id, updateValues }) => {
+    static async edit({project}){
+   
+        const { userId, _id, schoolName, major, graduationTypeCode } = project;
+        const editProject = await ProjectModel.findOneAndUpdate({ _id, userId }, { title, decription, startDate, endDate }, { new : true });
+       
+        return editProject;
+    }
 
-    const updatedProject = await ProjectModel.findOneAndUpdate({ _id }, 
-        { updateValues });  
-    return updatedProject;
-};
+    static async remove({ _id, userId }){
+   
+        const removeProject = await ProjectModel.findOneAndDelete({ _id, userId });
+        
+        return removeProject;
+    }
+}
 
-// projectId를 통해 프로젝트 삭제
-const deleteProject = async (_id) => {
-
-    const deletedProject = await ProjectModel.findOneAndDelete({ _id });
-           
-    return deletedProject;
-};
-
-export default { createProject, findProjectById, findProjectByProjectId, updateProject, deleteProject };
+export { Project };
