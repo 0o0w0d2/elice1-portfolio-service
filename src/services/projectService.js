@@ -1,21 +1,21 @@
-import { Project } from '../db';
+import Project from '../db/models/Project';
 
 
 // id를 통해 프로젝트 전체 조회
-export const getProjectById = (userId) => {
+const getProjectById = (userId) => {
     
     return Project.findProjectById(userId);
 }
 
 // projectId를 통해 프로젝트 조회
-export const getProjectByProjectId = (projectId) => {
+const getProjectByProjectId = (projectId) => {
     
     return Project.findProjectByProjectId(projectId)
 }
 
 
 // 프로젝트 생성
-export const addProject = async ({ userId, title, startDate, endDate, description, projectId }) => {
+const addProject = async ({ userId, title, startDate, endDate, description, projectId }) => {
 
     const newProject = await Project.createProject({
         userId,
@@ -32,11 +32,9 @@ export const addProject = async ({ userId, title, startDate, endDate, descriptio
 
 
 // 프로젝트 수정
-export const editProject = async ({ projectId, updateValues }) => {
+const editProject = async ({ projectId, updateValues }) => {
 
     const { title, startDate, endDate, description } = updateValues;
-
-    const project = await Project.findProjectByProjectId(projectId);
 
     const editValues = {
         title,
@@ -50,17 +48,10 @@ export const editProject = async ({ projectId, updateValues }) => {
 
 
 // 프로젝트 삭제
-export const delProject = async (projectId) => {
+const delProject = async (projectId) => {
     
-    const project = await Project.findProjectByProjectId(projectId);
-
-    if (!project) {
-        throw new Error("해당 프로젝트가 없습니다.")
-    }
-
-    if (project.userId !== userId ) {
-        throw new Error("권한이 없습니다.")
-    }
 
     return Project.deleteProject(projectId)
 };
+
+export default { getProjectById, getProjectByProjectId, addProject, editProject, delProject };

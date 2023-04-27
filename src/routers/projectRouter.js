@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { login_required } from 'express';
-import { projectService } from '../services/projectService';
+import projectService from '../services/projectService';
 import asyncHandler from '../utils/asyncHandler';
 
 
@@ -9,6 +9,7 @@ const projectRouter = Router();
 // userId 기반 전체 조회
 projectRouter.get('/', login_required, asyncHandler(async (req, res) => {
     
+    const userId = req.currentUserId;
 
     const projectList = await projectService.getProjectById(userId);
     res.status(200).json(projectList);
@@ -58,7 +59,7 @@ projectRouter.post('/', login_required, asyncHandler(async (req, res) => {
 projectRouter.patch('/:projectId', login_required, asyncHandler(async (req, res) => {
     const projectId = req.params.projectId;
     
-    const project = projectService.findProjectByProjectId(projectId);
+    const project = projectService.getProjectByProjectId(projectId);
 
     if (req.currentUserId !== project.userId) {
         throw new Error("권한이 없습니다.")
@@ -80,10 +81,10 @@ projectRouter.patch('/:projectId', login_required, asyncHandler(async (req, res)
 projectRouter.delete('/:projectId', login_required, asyncHandler(async (req, res) => {
     
     const projectId = req.params.projectId;
+    const userId = currentUserId;
+    const project = projectService.getProjectByProjectId(projectId);
 
-    const project = projectService.findProjectByProjectId(projectId);
-
-    if (req.currentUserId !== project.userId) { 
+    if (userId !== project.userId) { 
         throw new Error("권한이 없습니다.")
     }
 
