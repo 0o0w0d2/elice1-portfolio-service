@@ -7,7 +7,7 @@ import asyncHandler from '../utils/asyncHandler';
 const projectRouter = Router();
 
 // userId 기반 전체 조회
-projectRouter.get('/', login_required, asyncHandler(async (req, res) => {
+projectRouter.get('/project', login_required, asyncHandler(async (req, res) => {
     
     const userId = req.currentUserId;
 
@@ -31,37 +31,37 @@ projectRouter.get('/', login_required, asyncHandler(async (req, res) => {
 
 
 // 프로젝트 생성
-projectRouter.post('/', login_required, asyncHandler(async (req, res) => {
-        
+projectRouter.post('/project', login_required, asyncHandler(async (req, res) => {
+    
+    const { title, startDate, endDate, description } = req.body;
     // 스키마로 설정한 required: true인 값들에 대해서 확인
+    const userId = req.currentUserId
+
+
     if (!title || !startDate || !endDate) {
         throw new Error("필수 정보를 입력해주세요.")
     }
 
-    const { title, startDate, endDate, description } = req.body;
-    
-
     const newProject = await projectService.addProject({
-        userId: req.currentUserId,
+        userId,
         title,
         startDate,
         endDate,
         description,
-        projectId,
     })
 
-    res.status(200).json(newProject);
+    res.status(201).json(newProject);
    
 }));
 
 
 // 프로젝트 수정
-projectRouter.patch('/:projectId', login_required, asyncHandler(async (req, res) => {
-    const projectId = req.params.projectId;
-    
-    const project = projectService.getProjectByProjectId(projectId);
+projectRouter.patch('/project/:_id', login_required, asyncHandler(async (req, res) => {
+    const _id = req.params._id;
+    const userId = req.currentUserId;
+    const project = projectService.getProjectByProjectId(_id);
 
-    if (req.currentUserId !== project.userId) {
+    if (userId !== project.userId) {
         throw new Error("권한이 없습니다.")
     }
 
@@ -70,7 +70,7 @@ projectRouter.patch('/:projectId', login_required, asyncHandler(async (req, res)
     const updateValues = { title, startDate, endDate, description };
     
 
-    const updatedProject = await projectService.editProject({projectId, updateValues})
+    const updatedProject = await projectService.editProject({ _id, updateValues })
     res.status(200).json(updatedProject);
 
     
@@ -78,17 +78,17 @@ projectRouter.patch('/:projectId', login_required, asyncHandler(async (req, res)
 
 
 //프로젝트 삭제
-projectRouter.delete('/:projectId', login_required, asyncHandler(async (req, res) => {
+projectRouter.delete('/project/:_id', login_required, asyncHandler(async (req, res) => {
     
-    const projectId = req.params.projectId;
+    const _id = req.params._id;
     const userId = req.currentUserId;
-    const project = projectService.getProjectByProjectId(projectId);
+    const project = projectService.getProjectByProjectId(_id);
 
     if (userId !== project.userId) { 
         throw new Error("권한이 없습니다.")
     }
 
-    const deletedProject = await projectService.delProject(projectId);
+    const deletedProject = await projectService.delProject(_id);
     res.status(200).json(deletedProject);
 }));
 
