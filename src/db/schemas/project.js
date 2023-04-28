@@ -21,12 +21,9 @@ const ProjectSchema = new Schema({
         type: String,
         required: false,
         default: '프로젝트에 대한 내용을 입력해주세요'
-    },
-    projectId: {    // 이 프로젝트에 대한 고유값
-        type: String,
-        required: true,
-    }
-    
+    },  
+}, {
+    timestamps: true,
 });
 
 const ProjectModel = model('Project', ProjectSchema);
