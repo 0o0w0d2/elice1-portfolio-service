@@ -35,6 +35,11 @@ projectRouter.put('/project/:_id', login_required, asyncHandler(async (req, res,
         const { title, description, startDate, endDate } = req.body;
         const project = { userId, _id, title, description, startDate, endDate };
         
+        if (!title || !startDate || !endDate ) {
+            throw new Error("프로젝트 제목이나 날짜가 입력되어 있는지 확인해주세요.")
+        }
+
+
         const editProject = await projectService.editProject({project});
         
         if (editProject.errorMessage){
