@@ -9,7 +9,7 @@ projectRouter.get(
     '/project',
     login_required,
     asyncHandler( async (req, res, next)=>{
-        const { userId } = req.params;
+        const userId = req.currentUserId;
         const projectList = await projectService.getProject({userId});
         
         if (projectList.errorMessage){
@@ -36,7 +36,7 @@ projectRouter.post(
 );
 
 projectRouter.patch(
-    '/project',
+    '/project:_id',
     login_required,
     asyncHandler(async (req, res, next)=>{
         const userId = req.currentUserId;
