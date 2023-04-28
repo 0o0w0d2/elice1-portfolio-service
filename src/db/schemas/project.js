@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 
 const ProjectSchema = new Schema({
-    userId: {      // 유저에 대한 고유값 
+    userId: {      // 유저에 대한 고유값
         type: String,
         required: true,
     },               

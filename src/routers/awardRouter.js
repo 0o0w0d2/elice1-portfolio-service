@@ -7,7 +7,7 @@ import {
   deleteAward,
   getAllAwards,
   updateAward,
-} from '../db/models/Award';
+} from '../services/awardService';
 
 const awardRouter = Router();
 
@@ -20,7 +20,7 @@ awardRouter.get(
 
 awardRouter.post('/awards', login_required, createNewAward);
 
-awardRouter.patch(
+awardRouter.put(
   '/awards/:id',
   login_required,
   validate_user_award,

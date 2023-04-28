@@ -1,36 +1,70 @@
-import { AwardModel } from '../db/schemas/award';
+import asyncHandler from '../utils/asyncHandler';
+import {
+  createNewAwardForCurrentUser,
+  deleteAwardForCurrentUser,
+  getAllAwardsForCurrentUser,
+  updateAwardforCurrentUser,
+} from '../db/models/Award';
 
-export const getAllAwardsForCurrentUser = async (currentUserId) => {
-  return await AwardModel.find({ user: currentUserId });
-};
+// award api Controllers
 
-export const createNewAwardForCurrentUser = async ({
-  title,
-  description,
-  year,
-  user,
-}) => {
-  const newAward = new AwardModel({
+export const getAllAwards = asyncHandler(async (req, res) => {
+  // console.log(req.currentUserId);
+  const awards = await getAllAwardsForCurrentUser(req.currentUserId);
+  if (awards.length < 1) throw new Error('There is no awards.'); // error 변경하기
+
+  res.send(awards);
+});
+
+export const createNewAward = asyncHandler(async (req, res) => {
+  const { title, description, year } = req.body;
+
+  await createNewAwardForCurrentUser({
     title,
     description,
     year,
-    user,
+    user: req.currentUserId,
+  });
+  res.status(201).send('Created');
+});
+
+// export const updateAward = asyncHandler(async (req, res) => {
+//   // const { id } = req.params;
+//   const { title, description, year } = req.body;
+//   const award = req.resource;
+//   await updateAwardforCurrentUser(award, {
+//     title,
+//     description,
+//     year,
+//   });
+//   res.status(201).send('Updated');
+// });
+export const updateAward = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { title, description, year } = req.body;
+
+  await updateAwardforCurrentUser(id, req.currentUserId, {
+    title,
+    description,
+    year,
   });
 
-  await newAward.save();
-  return newAward;
-};
+  res.status(201).send('Updated');
+});
 
-export const updateAwardforCurrentUser = async (award, updateValue) => {
-  award.title = updateValue.title;
-  award.description = updateValue.description;
-  award.year = updateValue.year;
+// export const deleteAward = asyncHandler(async (req, res) => {
+//   // const { id } = req.params;
+//   const award = req.resource;
+//   await deleteAwardForCurrentUser(award);
 
-  await award.save();
-  return award;
-};
+//   if (!award) res.status(404).send('Not Found');
 
-export const deleteAwardForCurrentUser = async (award) => {
-  await award.remove();
-  return award;
-};
+//   res.status(201).send('Deleted');
+// });
+export const deleteAward = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  // console.log(id);
+  await deleteAwardForCurrentUser(id, req.currentUserId);
+
+  res.status(204).send();
+});

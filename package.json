@@ -29,7 +29,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.1",
     "nanoid": "^3.3.6",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.0",
