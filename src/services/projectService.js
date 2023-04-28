@@ -4,7 +4,7 @@ class projectService {
     static async getProject({ userId }){
         const projectList = await Project.findByUserId({userId});
         
-        if(!projectList.length){
+        if(projectList.length < 1){
             const errorMessage = '프로젝트가 없습니다.';
             return { errorMessage };
         };
@@ -32,11 +32,11 @@ class projectService {
     static async removeProject({ _id, userId }){
         const removedProject = await Project.remove({ _id, userId });
         
-        if(!removedProject){
+        if(!removedProject ){
             const errorMessage = '권한이 없습니다.';
             return { errorMessage };
         };
-        
+
         return removedProject;
     }
 

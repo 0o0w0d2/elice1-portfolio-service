@@ -17,8 +17,8 @@ class Project {
 
     static async edit({project}){
    
-        const { userId, _id, title, decription, startDate, endDate } = project;
-        const editProject = await ProjectModel.findOneAndUpdate({ _id, userId }, { title, decription, startDate, endDate }, { new : true });
+        const { userId, _id, title, description, startDate, endDate } = project;
+        const editProject = await ProjectModel.findOneAndUpdate({ _id, userId }, { title, description, startDate, endDate }, { new : true });
        
         return editProject;
     }

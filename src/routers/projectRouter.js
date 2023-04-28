@@ -5,11 +5,9 @@ import asyncHandler from '../utils/asyncHandler';
 
 const projectRouter = Router();
 
-projectRouter.get(
-    '/project',
-    login_required,
-    asyncHandler( async (req, res, next)=>{
+projectRouter.get('/project', login_required, asyncHandler( async (req, res, next)=>{
         const userId = req.currentUserId;
+        console.log(userId);
         const projectList = await projectService.getProject({userId});
         
         if (projectList.errorMessage){
@@ -20,11 +18,7 @@ projectRouter.get(
     })
 );
 
-projectRouter.post(
-    '/project',
-    login_required,
-    asyncHandler(async (req, res, next)=>{
-        
+projectRouter.post('/project', login_required, asyncHandler(async (req, res, next)=>{
         const userId = req.currentUserId;
         const { title, description, startDate, endDate } = req.body;
         const project = { userId, title, description, startDate, endDate };
@@ -35,12 +29,10 @@ projectRouter.post(
     })
 );
 
-projectRouter.patch(
-    '/project:_id',
-    login_required,
-    asyncHandler(async (req, res, next)=>{
+projectRouter.put('/project/:_id', login_required, asyncHandler(async (req, res, next)=>{
         const userId = req.currentUserId;
-        const { _id, title, description, startDate, endDate } = req.body;
+        const _id = req.params._id;
+        const { title, description, startDate, endDate } = req.body;
         const project = { userId, _id, title, description, startDate, endDate };
         
         const editProject = await projectService.editProject({project});
@@ -53,16 +45,13 @@ projectRouter.patch(
     })
 );
 
-projectRouter.delete(
-    '/project/:_id',
-    login_required,
-    asyncHandler(async (req, res, next)=>{
+projectRouter.delete('/project/:_id', login_required, asyncHandler(async (req, res, next)=>{
         const userId = req.currentUserId;
-        const { _id } = req.params;
+        const _id = req.params._id;
         
         const deleteProject = await projectService.removeProject({ userId, _id });
         
-        if (deleteProjecterrorMessage){
+        if (deleteProject.errorMessage){
             throw new Error(deleteProject.errorMessage);
         };
         
