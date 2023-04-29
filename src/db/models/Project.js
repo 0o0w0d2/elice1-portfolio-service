@@ -7,17 +7,23 @@ class Project {
     return projectList;
   }
 
+  static async findByProjectId({ projectId }) {
+		const findProject = await ProjectModel.findById(projectId);
+    
+		return findProject;
+  }
+
   static async add({ project }) {
     const newProject = await ProjectModel.create(project);
 
     return newProject;
   }
 
-  static async edit({ project }) {
-    const { userId, _id, title, description, startDate, endDate } = project;
+  static async edit({ _id, newValues }) {
+  
     const editProject = await ProjectModel.findOneAndUpdate(
-      { _id, userId },
-      { title, description, startDate, endDate },
+      { _id },
+      newValues,
       { new: true }
     );
 
