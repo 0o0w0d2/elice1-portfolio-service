@@ -1,40 +1,37 @@
 import { ProjectModel } from '../schemas/project';
 
-class Project {
-  static async findByUserId({ userId }) {
+const findByUserId = async ({ userId }) => {
     const projectList = await ProjectModel.find({ userId });
 
     return projectList;
-  }
+}
 
-  static async findByProjectId({ projectId }) {
-		const findProject = await ProjectModel.findById(projectId);
-    
-		return findProject;
-  }
+const findByProjectId = async ({ _id }) => {
+    const findProject = await ProjectModel.findById(_id);
 
-  static async add({ project }) {
+    return findProject;
+}
+
+const createProject = async ({ project }) => {
     const newProject = await ProjectModel.create(project);
 
     return newProject;
-  }
-
-  static async edit({ _id, newValues }) {
-  
-    const editProject = await ProjectModel.findOneAndUpdate(
-      { _id },
-      newValues,
-      { new: true }
-    );
-
-    return editProject;
-  }
-
-  static async remove({ _id}) {
-    const removeProject = await ProjectModel.findOneAndDelete({ _id });
-
-    return removeProject;
-  }
 }
 
-export { Project };
+const updateProject = async ({ _id, newValues }) => {
+    const updatedProject = await ProjectModel.findOneAndUpdate(
+        { _id },
+        newValues,
+        {new: true}
+    );
+
+    return updatedProject;
+}
+
+const deleteProject = async ({ _id}) => {
+    const deletedProject = await ProjectModel.findOneAndDelete({ _id });
+
+    return deletedProject;
+}
+
+export default { findByUserId, findByProjectId, createProject, updateProject, deleteProject };
