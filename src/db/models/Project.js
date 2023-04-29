@@ -30,8 +30,8 @@ class Project {
     return editProject;
   }
 
-  static async remove({ _id, userId }) {
-    const removeProject = await ProjectModel.findOneAndDelete({ _id, userId });
+  static async remove({ _id}) {
+    const removeProject = await ProjectModel.findOneAndDelete({ _id });
 
     return removeProject;
   }

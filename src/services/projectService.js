@@ -47,7 +47,7 @@ class projectService {
             return { errorMessage };
 		}
 
-        const removedProject = await Project.remove({ _id, userId });
+        const removedProject = await Project.remove({ _id });
 
         return removedProject;
     }
