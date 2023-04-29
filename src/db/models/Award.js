@@ -1,7 +1,18 @@
 import { AwardModel } from '../schemas/award';
 
-export const getAllAwardsForCurrentUser = async (currentUserId) => {
-  return await AwardModel.find({ user: currentUserId });
+// export const getAllAwardsForCurrentUser = async (currentUserId) => {
+//   return await AwardModel.find({ user: currentUserId });
+// };
+export const getAllAwardsForCurrentUser = async (currentUserId, userId) => {
+  console.log('currentincont:', currentUserId);
+  console.log('userIdincont:', userId);
+  if (currentUserId === userId) {
+    // Return all awards, including those created by the current user
+    return await AwardModel.find({ user: userId });
+  } else {
+    // Return only awards created by the specified user
+    return await AwardModel.find({ user: userId, isPrivate: false });
+  }
 };
 
 // export const createNewAwardForCurrentUser = async ({
