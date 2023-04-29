@@ -5,9 +5,9 @@ import asyncHandler from '../utils/asyncHandler';
 
 const projectRouter = Router();
 
-projectRouter.get('/project', login_required, asyncHandler( async (req, res, next)=>{
-        const userId = req.currentUserId;
-        console.log(userId);
+projectRouter.get('/project/:userId', login_required, asyncHandler( async (req, res, next)=>{
+        
+        const userId = req.params.userId;
         const projectList = await projectService.getProject({userId});
         
         if (projectList.errorMessage){
