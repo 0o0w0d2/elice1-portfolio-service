@@ -1,57 +1,57 @@
-import Project from '../db/models/Project';
+import { Project } from '../db';
 
-
-// id를 통해 프로젝트 전체 조회
-const getProjectById = (userId) => {
-    
-    return Project.findProjectById(userId);
-}
-
-// projectId를 통해 프로젝트 조회
-const getProjectByProjectId = (projectId) => {
-    
-    return Project.findProjectByProjectId(projectId)
-}
-
-
-// 프로젝트 생성
-const addProject = async ({ userId, title, startDate, endDate, description, projectId }) => {
-
-    const newProject = await Project.createProject({
-        userId,
-        title, 
-        startDate, 
-        endDate, 
-        description, 
-        projectId
-    });
-
-    return newProject;
-
-}
-
-
-// 프로젝트 수정
-const editProject = async ({ projectId, updateValues }) => {
-
-    const { title, startDate, endDate, description } = updateValues;
-
-    const editValues = {
-        title,
-        startDate,
-        endDate,
-        description,
+class projectService {
+    static async getProject({ userId }){
+        const projectList = await Project.findByUserId({userId});
+        
+        return projectList;
     }
 
-    return Project.updateProject( { projectId, editValues } )
-}
+    static async addProject({ project }){
+           
+        const newProject = await Project.add({ project });
 
+        return newProject;
+    }
 
-// 프로젝트 삭제
-const delProject = async (projectId) => {
-    
+    static async editProject({ _id, newValues, userId }){
 
-    return Project.deleteProject(projectId)
+        const project = await Project.findByProjectId({ projectId: _id })  
+        
+        if (!project) {
+            const errorMessage = '프로젝트를 찾을 수 없습니다.';
+            return { errorMessage }
+        };
+
+        if (project.userId !== userId){
+			const errorMessage = '권한이 없습니다.';
+            return { errorMessage };
+		};
+        
+        const editedProject = await Project.edit({ _id, newValues });
+        
+        return editedProject;
+    }
+
+    static async removeProject({ _id, userId }){
+        
+        const project = await Project.findByProjectId({ projectId: _id })       
+
+        if (!project) {
+            const errorMessage = '프로젝트를 찾을 수 없습니다.';
+            return { errorMessage }
+        }
+
+        if (project.userId !== userId){
+			const errorMessage = '권한이 없습니다.';
+            return { errorMessage };
+		}
+
+        const removedProject = await Project.remove({ _id });
+
+        return removedProject;
+    }
+
 };
 
-export default { getProjectById, getProjectByProjectId, addProject, editProject, delProject };
+export { projectService };

@@ -1,95 +1,74 @@
 import { Router } from 'express';
 import { login_required } from '../middlewares/login_required';
-import projectService from '../services/projectService';
+import { projectService } from '../services/projectService';
 import asyncHandler from '../utils/asyncHandler';
-
 
 const projectRouter = Router();
 
-// userId 기반 전체 조회
-projectRouter.get('/', login_required, asyncHandler(async (req, res) => {
-    
-    const userId = req.currentUserId;
-
-    const projectList = await projectService.getProjectById(userId);
-    res.status(200).json(projectList);
-
-}));
-
-
-// // projectId 기반 조회
-// projectRouter.get('/:projectId', login_required, asyncHandler(async (req, res) => {
-    
-//     const projectId = req.params.projectId;
-
-    //projectService.getProjectByProjectId
-
-   
-// }));
-
-
-
-
-// 프로젝트 생성
-projectRouter.post('/', login_required, asyncHandler(async (req, res) => {
+projectRouter.get('/project/:userId', login_required, asyncHandler( async (req, res, next)=>{
         
-    // 스키마로 설정한 required: true인 값들에 대해서 확인
-    if (!title || !startDate || !endDate) {
-        throw new Error("필수 정보를 입력해주세요.")
-    }
-
-    const { title, startDate, endDate, description } = req.body;
-    
-
-    const newProject = await projectService.addProject({
-        userId: req.currentUserId,
-        title,
-        startDate,
-        endDate,
-        description,
-        projectId,
+        const userId = req.params.userId;
+        const projectList = await projectService.getProject({userId});
+        
+        if (projectList.errorMessage){
+            throw new Error(projectList.errorMessage);
+        };
+        
+        res.status(200).send(projectList);
     })
+);
 
-    res.status(200).json(newProject);
-   
-}));
+projectRouter.post('/project', login_required, asyncHandler(async (req, res, next)=>{
+        const userId = req.currentUserId;
+        const { title, description, startDate, endDate } = req.body;
+        const project = { userId, title, description, startDate, endDate };
+        
+        if (!title || !startDate || !endDate ) {
+            throw new Error("프로젝트 제목이나 날짜가 입력되어 있는지 확인해주세요.")
+        }
 
+        const addNewProject = await projectService.addProject({project});
+        
+        res.status(201).send(addNewProject);
+    })
+);
 
-// 프로젝트 수정
-projectRouter.patch('/:projectId', login_required, asyncHandler(async (req, res) => {
-    const projectId = req.params.projectId;
+projectRouter.put('/project/:_id', login_required, asyncHandler(async (req, res, next)=>{
+        
+        const userId = req.currentUserId;
+        const _id = req.params._id;
+        const { title, description, startDate, endDate } = req.body;
     
-    const project = projectService.getProjectByProjectId(projectId);
+        const newValues = { title, description, startDate, endDate };
+        
+        if (!title || !startDate || !endDate ) {
+            throw new Error("프로젝트 제목이나 날짜가 입력되어 있는지 확인해주세요.")
+        }
 
-    if (req.currentUserId !== project.userId) {
-        throw new Error("권한이 없습니다.")
-    }
+        const editProject = await projectService.editProject({ _id, newValues, userId });
+        
+        if (editProject.errorMessage){
+            throw new Error(editProject.errorMessage);
+        };
+        
+        res.status(200).send(editProject);
+    })
+);
 
-    const { title, startDate, endDate, description } = req.body;
-    
-    const updateValues = { title, startDate, endDate, description };
-    
+projectRouter.delete('/project/:_id', login_required, asyncHandler(async (req, res, next)=>{
+        const userId = req.currentUserId;
+        const _id = req.params._id;
 
-    const updatedProject = await projectService.editProject({projectId, updateValues})
-    res.status(200).json(updatedProject);
+        const deleteProject = await projectService.removeProject({ _id, userId });
+        
+        if (deleteProject.errorMessage){
+            throw new Error(deleteProject.errorMessage);
+        };
+        
+        res.status(200).send(deleteProject);
+    })
+);
 
-    
-}));
 
 
-//프로젝트 삭제
-projectRouter.delete('/:projectId', login_required, asyncHandler(async (req, res) => {
-    
-    const projectId = req.params.projectId;
-    const userId = req.currentUserId;
-    const project = projectService.getProjectByProjectId(projectId);
-
-    if (userId !== project.userId) { 
-        throw new Error("권한이 없습니다.")
-    }
-
-    const deletedProject = await projectService.delProject(projectId);
-    res.status(200).json(deletedProject);
-}));
-
-export default projectRouter;
+export { projectRouter };

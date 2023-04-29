@@ -1,36 +1,61 @@
-import { AwardModel } from '../db/schemas/award';
+import asyncHandler from '../utils/asyncHandler';
+import {
+  createNewAwardForCurrentUser,
+  deleteAwardForCurrentUser,
+  getAllAwardsForCurrentUser,
+  updateAwardforCurrentUser,
+} from '../db/models/Award';
 
-export const getAllAwardsForCurrentUser = async (currentUserId) => {
-  return await AwardModel.find({ user: currentUserId });
-};
+// award api Controllers
+export const getAllAwards = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  console.log('currentcinser:', req.currentUserId);
+  console.log('userIdinser:', userId);
 
-export const createNewAwardForCurrentUser = async ({
-  title,
-  description,
-  year,
-  user,
-}) => {
-  const newAward = new AwardModel({
+  if (!userId) {
+    // If no user ID is provided, return all awards for the current user
+    const awards = await getAllAwardsForCurrentUser(
+      req.currentUserId,
+      req.currentUserId
+    );
+    if (awards.length < 1) throw new Error('There is no awards.');
+    res.send(awards);
+  } else {
+    // Return only the awards for the specified user
+    const awards = await getAllAwardsForCurrentUser(req.currentUserId, userId);
+    if (awards.length < 1) throw new Error('There is no awards.');
+    res.send(awards);
+  }
+});
+
+export const createNewAward = asyncHandler(async (req, res) => {
+  const { title, description, year } = req.body;
+
+  await createNewAwardForCurrentUser({
     title,
     description,
     year,
-    user,
+    user: req.currentUserId,
+  });
+  res.status(201).send('Created');
+});
+
+export const updateAward = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { title, description, year } = req.body;
+
+  await updateAwardforCurrentUser(id, req.currentUserId, {
+    title,
+    description,
+    year,
   });
 
-  await newAward.save();
-  return newAward;
-};
+  res.status(201).send('Updated');
+});
 
-export const updateAwardforCurrentUser = async (award, updateValue) => {
-  award.title = updateValue.title;
-  award.description = updateValue.description;
-  award.year = updateValue.year;
+export const deleteAward = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  await deleteAwardForCurrentUser(id, req.currentUserId);
 
-  await award.save();
-  return award;
-};
-
-export const deleteAwardForCurrentUser = async (award) => {
-  await award.remove();
-  return award;
-};
+  res.status(204).send();
+});

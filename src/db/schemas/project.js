@@ -1,8 +1,8 @@
 import { Schema, model } from 'mongoose';
 
 const ProjectSchema = new Schema({
-    userId: {      // 유저에 대한 고유값 
-        type: Number,
+    userId: {      // 유저에 대한 고유값
+        type: String,
         required: true,
     },               
     title: {       // 프로젝트 이름
@@ -21,12 +21,9 @@ const ProjectSchema = new Schema({
         type: String,
         required: false,
         default: '프로젝트에 대한 내용을 입력해주세요'
-    },
-    projectId: {    // 이 프로젝트에 대한 고유값
-        type: String,
-        required: true,
-    }
-    
+    },  
+}, {
+    timestamps: true,
 });
 
 const ProjectModel = model('Project', ProjectSchema);

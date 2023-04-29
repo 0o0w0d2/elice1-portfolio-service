@@ -6,10 +6,10 @@ import asyncHandler from '../utils/asyncHandler';
 const educationRouter = Router();
 // 다른 유저의 정보 얻는 부분 필요. req에 userId값 필요
 educationRouter.get(
-    '/education',
+    '/education/:userId',
     login_required,
     asyncHandler( async (req, res, next)=>{
-        const { userId } = req.body;
+        const { userId } = req.params;
         const educationList = await educationService.getEducation({userId});
         if (educationList.errorMessage){
             throw new Error(educationList.errorMessage);
@@ -46,11 +46,11 @@ educationRouter.patch(
 );
 // 삭제는 delete 메소드
 educationRouter.delete(
-    '/education',
+    '/education/:_id',
     login_required,
     asyncHandler(async (req, res, next)=>{
         const userId = req.currentUserId;
-        const { _id } = req.body;
+        const { _id } = req.params;
         const deleteEducation = await educationService.removeEducation({ userId, _id });
         if (deleteEducation.errorMessage){
             throw new Error(deleteEducation.errorMessage);
