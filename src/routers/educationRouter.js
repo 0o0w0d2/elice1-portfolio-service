@@ -40,11 +40,11 @@ educationRouter.patch(
     asyncHandler(async (req, res, next)=>{
         const userId = req.currentUserId;
         const { _id, schoolName, major, graduationTypeCode } = req.body;
-        const education = { userId, _id, schoolName, major, graduationTypeCode };
+        const education = { _id, schoolName, major, graduationTypeCode };
         
         validateValue(education);
 
-        const editEducation = await educationService.editEducation({education});
+        const editEducation = await educationService.editEducation({userId, education});
         if (editEducation.errorMessage){
             throw new Error(editEducation.errorMessage);
         };
