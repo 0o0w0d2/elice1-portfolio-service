@@ -20,36 +20,39 @@ educationRouter.get(
 );
 // 학력 추가는 post 메소드, education = {UserId,schoolName:학교명,major:전공,graduationTypeCode:졸업상태}
 educationRouter.post(
-    '/education',
-    login_required,
-    asyncHandler(async (req, res, next)=>{
-        const userId = req.currentUserId;
-        const { schoolName, major, graduationTypeCode } = req.body;
-        const education = { userId, schoolName, major, graduationTypeCode };
-        
-        validateValue(education);
+  '/education',
+  login_required,
+  asyncHandler(async (req, res, next) => {
+    const userId = req.currentUserId;
+    const { schoolName, major, graduationTypeCode } = req.body;
+    const education = { userId, schoolName, major, graduationTypeCode };
 
-        const addNewEducation = await educationService.addEducation({education});
-        res.status(201).send(addNewEducation);
-    })
+    validateValue(education);
+
+    const addNewEducation = await educationService.addEducation({ education });
+    res.status(201).send(addNewEducation);
+  })
 );
 // 변경은 patch 메소드, education = { _id:학력,schoolName:학교명,major:전공,graduationTypeCode:졸업상태}
 educationRouter.patch(
-    '/education',
-    login_required,
-    asyncHandler(async (req, res, next)=>{
-        const userId = req.currentUserId;
-        const { _id, schoolName, major, graduationTypeCode } = req.body;
-        const education = { _id, schoolName, major, graduationTypeCode };
-        
-        validateValue(education);
+  '/education',
+  login_required,
+  asyncHandler(async (req, res, next) => {
+    const userId = req.currentUserId;
+    const { _id, schoolName, major, graduationTypeCode } = req.body;
+    const education = { _id, schoolName, major, graduationTypeCode };
 
-        const editEducation = await educationService.editEducation({userId, education});
-        if (editEducation.errorMessage){
-            throw new Error(editEducation.errorMessage);
-        };
-        res.status(200).send(editEducation);
-    })
+    validateValue(education);
+
+    const editEducation = await educationService.editEducation({
+      userId,
+      education,
+    });
+    if (editEducation.errorMessage) {
+      throw new Error(editEducation.errorMessage);
+    }
+    res.status(200).send(editEducation);
+  })
 );
 // 삭제는 delete 메소드
 educationRouter.delete(
