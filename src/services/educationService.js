@@ -1,4 +1,5 @@
 import { Education } from '../db';
+import { checkPermissionInEducation } from '../utils/validate';
 
 class educationService {
     static async getEducation({userId}){
@@ -13,32 +14,18 @@ class educationService {
 
     static async editEducation({ userId, education}){
         const { _id } = education;
-        const editEducation = await Education.findById({_id});
 
-        if(!editEducation){
-            const errorMessage = '해당 학력 사항이 없습니다.';
-            return { errorMessage };
-        };
-        if(editEducation.userId !== userId){
-            const errorMessage = '권한이 없습니다.';
-            return { errorMessage };
-        };
+        const errorMessage = await checkPermissionInEducation(_id,userId);
+        if(errorMessage) return errorMessage;
 
         const editedEducation = await Education.edit({education});
         return editedEducation;
     }
 
     static async removeEducation({ _id, userId }){
-        const removeEducation = await Education.findById({_id});
-
-        if(!removeEducation){
-            const errorMessage = '해당 학력 사항이 없습니다.';
-            return { errorMessage };
-        };
-        if(removeEducation.userId !== userId){
-            const errorMessage = '권한이 없습니다.';
-            return { errorMessage };
-        };
+        
+        const errorMessage = await checkPermissionInEducation(_id,userId);
+        if(errorMessage) return errorMessage;
 
         const removedEducation = await Education.remove({ _id });
         return removedEducation;
