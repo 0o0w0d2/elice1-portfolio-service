@@ -5,70 +5,82 @@ import asyncHandler from '../utils/asyncHandler';
 
 const projectRouter = Router();
 
-projectRouter.get('/project/:userId', login_required, asyncHandler( async (req, res, next)=>{
-        
-        const userId = req.params.userId;
-        const projectList = await projectService.getAllProject({userId});
-        
-        if (projectList.errorMessage){
-            throw new Error(projectList.errorMessage);
-        };
-        
-        res.status(200).send(projectList);
-    })
+projectRouter.get(
+  '/project/:userId',
+  login_required,
+  asyncHandler(async (req, res, next) => {
+    const userId = req.params.userId;
+    const projectList = await projectService.getAllProject({ userId });
+
+    if (projectList.errorMessage) {
+      throw new Error(projectList.errorMessage);
+    }
+
+    res.status(200).send(projectList);
+  })
 );
 
-projectRouter.post('/project', login_required, asyncHandler(async (req, res, next)=>{
-        const userId = req.currentUserId;
-        const { title, description, startDate, endDate } = req.body;
-        const project = { userId, title, description, startDate, endDate };
-        
-        if (!title || !startDate || !endDate ) {
-            throw new Error("프로젝트 제목이나 날짜가 입력되어 있는지 확인해주세요.")
-        }
+projectRouter.post(
+  '/project',
+  login_required,
+  asyncHandler(async (req, res, next) => {
+    const userId = req.currentUserId;
+    const { title, description, startDate, endDate } = req.body;
+    const project = { userId, title, description, startDate, endDate };
 
-        const addNewProject = await projectService.addProject({project});
-        
-        res.status(201).send(addNewProject);
-    })
+    if (!title || !startDate || !endDate) {
+      throw new Error('프로젝트 제목이나 날짜가 입력되어 있는지 확인해주세요.');
+    }
+
+    const addNewProject = await projectService.addProject({ project });
+
+    res.status(201).send(addNewProject);
+  })
 );
 
-projectRouter.put('/project/:_id', login_required, asyncHandler(async (req, res, next)=>{
-        
-        const userId = req.currentUserId;
-        const _id = req.params._id;
-        const { title, description, startDate, endDate } = req.body;
-    
-        const newValues = { title, description, startDate, endDate };
-        
-        if (!title || !startDate || !endDate ) {
-            throw new Error("프로젝트 제목이나 날짜가 입력되어 있는지 확인해주세요.")
-        }
+projectRouter.put(
+  '/project/:_id',
+  login_required,
+  asyncHandler(async (req, res, next) => {
+    const userId = req.currentUserId;
+    const _id = req.params._id;
+    const { title, description, startDate, endDate } = req.body;
 
-        const editProject = await projectService.editProject({ _id, newValues, userId });
-        
-        if (editProject.errorMessage){
-            throw new Error(editProject.errorMessage);
-        };
-        
-        res.status(200).send(editProject);
-    })
+    const newValues = { title, description, startDate, endDate };
+
+    if (!title || !startDate || !endDate) {
+      throw new Error('프로젝트 제목이나 날짜가 입력되어 있는지 확인해주세요.');
+    }
+
+    const editProject = await projectService.editProject({
+      _id,
+      newValues,
+      userId,
+    });
+
+    if (editProject.errorMessage) {
+      throw new Error(editProject.errorMessage);
+    }
+
+    res.status(200).send(editProject);
+  })
 );
 
-projectRouter.delete('/project/:_id', login_required, asyncHandler(async (req, res, next)=>{
-        const userId = req.currentUserId;
-        const _id = req.params._id;
+projectRouter.delete(
+  '/project/:_id',
+  login_required,
+  asyncHandler(async (req, res, next) => {
+    const userId = req.currentUserId;
+    const _id = req.params._id;
 
-        const deleteProject = await projectService.removeProject({ _id, userId });
-        
-        if (deleteProject.errorMessage){
-            throw new Error(deleteProject.errorMessage);
-        };
-        
-        res.status(200).send(deleteProject);
-    })
+    const deleteProject = await projectService.removeProject({ _id, userId });
+
+    if (deleteProject.errorMessage) {
+      throw new Error(deleteProject.errorMessage);
+    }
+
+    res.status(200).send(deleteProject);
+  })
 );
-
-
 
 export { projectRouter };
