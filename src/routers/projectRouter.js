@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { login_required } from '../middlewares/login_required';
-import { projectService } from '../services/projectService';
+import projectService from '../services/projectService';
 import asyncHandler from '../utils/asyncHandler';
 
 const projectRouter = Router();
@@ -8,7 +8,7 @@ const projectRouter = Router();
 projectRouter.get('/project/:userId', login_required, asyncHandler( async (req, res, next)=>{
         
         const userId = req.params.userId;
-        const projectList = await projectService.getProject({userId});
+        const projectList = await projectService.getAllProject({userId});
         
         if (projectList.errorMessage){
             throw new Error(projectList.errorMessage);
