@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { login_required } from '../middlewares/login_required';
 import { educationService } from '../services/educationService';
 import asyncHandler from '../utils/asyncHandler';
-import validateValue from '../utils/validateValue';
+import { validateValue } from '../utils/validate';
 
 const educationRouter = Router();
 // 다른 유저의 정보 얻는 부분 필요. req에 userId값 필요
