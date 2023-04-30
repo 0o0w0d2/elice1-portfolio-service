@@ -1,91 +1,45 @@
 import { AwardModel } from '../schemas/award';
 
-// export const getAllAwardsForCurrentUser = async (currentUserId) => {
-//   return await AwardModel.find({ user: currentUserId });
-// };
-export const getAllAwardsForCurrentUser = async (currentUserId, userId) => {
-  console.log('currentincont:', currentUserId);
-  console.log('userIdincont:', userId);
-  if (currentUserId === userId) {
-    // Return all awards, including those created by the current user
-    return await AwardModel.find({ user: userId });
-  } else {
-    // Return only awards created by the specified user
-    return await AwardModel.find({ user: userId, isPrivate: false });
-  }
+const Award = {
+  findByUserId: async (userId) => {
+    console.log(userId);
+    try {
+      const awards = await AwardModel.find({ userId });
+      return awards;
+    } catch (err) {
+      throw new Error(
+        `An Error occurs while retrieving awards: ${err.message}`
+      );
+    }
+  },
+  create: async (award) => {
+    try {
+      const newAward = new AwardModel(award);
+      await newAward.save();
+      return newAward.toObject();
+    } catch (err) {
+      throw new Error(`An Error occurs while creating new award`);
+    }
+  },
+  update: async ({ _id, userId, ...updateAward }) => {
+    try {
+      const resource = await AwardModel.findOne({ _id, userId });
+      Object.assign(resource, updateAward);
+
+      await resource.save();
+      return resource;
+    } catch (err) {
+      throw new Error(`An Error occurs while updating the award.`);
+    }
+  },
+  delete: async (_id) => {
+    try {
+      const deletedAward = await AwardModel.findByIdAndDelete({ _id });
+      return deletedAward;
+    } catch (err) {
+      throw new Error(`An Error occurs while deleting the award`);
+    }
+  },
 };
 
-// export const createNewAwardForCurrentUser = async ({
-//   title,
-//   description,
-//   year,
-//   user,
-// }) => {
-//   const newAward = new AwardModel({
-//     title,
-//     description,
-//     year,
-//     user,
-//   });
-
-//   await newAward.save();
-//   return newAward;
-// };
-export const createNewAwardForCurrentUser = async ({
-  title,
-  description,
-  year,
-  user,
-}) => {
-  const newAward = new AwardModel({
-    title,
-    description,
-    year,
-    user,
-  });
-
-  const savedAward = await newAward.save();
-  return savedAward.toObject(); // Return the full award object after saving it to the database
-};
-
-// export const updateAwardforCurrentUser = async (award, updateValue) => {
-//   award.title = updateValue.title;
-//   award.description = updateValue.description;
-//   award.year = updateValue.year;
-
-//   await award.save();
-//   return award;
-// };
-export const updateAwardforCurrentUser = async (
-  awardId,
-  userId,
-  updateValue
-) => {
-  const resource = await AwardModel.findOne({ id: awardId, user: userId });
-
-  if (!resource) {
-    throw new Error('Award not found for user.');
-  }
-
-  resource.title = updateValue.title;
-  resource.description = updateValue.description;
-  resource.year = updateValue.year;
-
-  await resource.save();
-  return resource;
-};
-
-// export const deleteAwardForCurrentUser = async (award) => {
-//   await award.remove();
-//   return award;
-// };
-export const deleteAwardForCurrentUser = async (awardId, userId) => {
-  const resource = await AwardModel.findOne({ id: awardId, user: userId });
-
-  if (!resource) {
-    throw new Error('Award not found for user.');
-  }
-
-  await resource.remove();
-  return resource;
-};
+export { Award };
