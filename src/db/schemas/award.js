@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-import { nanoid } from 'nanoid';
 
 const AwardSchema = new Schema(
   {
