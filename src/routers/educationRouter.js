@@ -33,13 +33,14 @@ educationRouter.post(
     res.status(201).send(addNewEducation);
   })
 );
-// 변경은 patch 메소드, education = { _id:학력,schoolName:학교명,major:전공,graduationTypeCode:졸업상태}
-educationRouter.patch(
-  '/education',
+// 변경은 put 메소드, education = { _id:학력,schoolName:학교명,major:전공,graduationTypeCode:졸업상태}
+educationRouter.put(
+  '/education/:_id',
   login_required,
   asyncHandler(async (req, res, next) => {
     const userId = req.currentUserId;
-    const { _id, schoolName, major, graduationTypeCode } = req.body;
+    const { _id } = req.params;
+    const { schoolName, major, graduationTypeCode } = req.body;
     const education = { _id, schoolName, major, graduationTypeCode };
 
     validateValue(education);

@@ -1,4 +1,5 @@
 import Project from '../db/models/Project';
+import { checkPermissionInProject } from '../utils/validate';
 
 const getAllProject = async ({ userId }) => {
   const projectList = await Project.findByUserId({ userId });
@@ -13,17 +14,9 @@ const addProject = async ({ project }) => {
 };
 
 const editProject = async ({ _id, newValues, userId }) => {
-  const project = await Project.findByProjectId({ _id });
-
-  if (!project) {
-    const errorMessage = '프로젝트를 찾을 수 없습니다.';
-    return { errorMessage };
-  }
-
-  if (project.userId !== userId) {
-    const errorMessage = '권한이 없습니다.';
-    return { errorMessage };
-  }
+  // 권한 검사 : 로그인 유저와 DB주인 비교
+  const errorMessage = await checkPermissionInProject(_id, userId);
+  if (errorMessage) return errorMessage;
 
   const editedProject = await Project.updateProject({ _id, newValues });
 
@@ -31,17 +24,9 @@ const editProject = async ({ _id, newValues, userId }) => {
 };
 
 const removeProject = async ({ _id, userId }) => {
-  const project = await Project.findByProjectId({ _id });
 
-  if (!project) {
-    const errorMessage = '프로젝트를 찾을 수 없습니다.';
-    return { errorMessage };
-  }
-
-  if (project.userId !== userId) {
-    const errorMessage = '권한이 없습니다.';
-    return { errorMessage };
-  }
+  const errorMessage = await checkPermissionInProject(_id, userId);
+  if (errorMessage) return errorMessage;
 
   const removedProject = await Project.deleteProject({ _id });
 
