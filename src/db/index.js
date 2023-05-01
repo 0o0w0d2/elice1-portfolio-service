@@ -3,13 +3,12 @@ import { User } from './models/User';
 import { Education } from './models/Education';
 import { Project } from './models/Project';
 import { Award } from './models/Award';
+import { Certification } from './models/Certification';
+
 const DB_URL =
   process.env.MONGODB_URL ||
   'MongoDB 서버 주소가 설정되지 않았습니다.\n./db/index.ts 파일을 확인해 주세요.';
-// mongoose.connect(DB_URL);
-mongoose.connect(
-  'mongodb+srv://thisisjustpeter:XB9VKzco7BIFe9n8@elice.arckh9d.mongodb.net/test'
-);
+mongoose.connect(DB_URL);
 const db = mongoose.connection;
 
 // check for test.
@@ -24,4 +23,4 @@ db.on('error', (error) =>
   console.error('MongoDB 연결에 실패하였습니다...\n' + DB_URL + '\n' + error)
 );
 
-export { User, Education, Project, Award };
+export { User, Education, Project, Award, Certification };
