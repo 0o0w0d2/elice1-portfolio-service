@@ -1,5 +1,5 @@
-import Project from '../db/models/Project';
-import { checkPermissionInProject } from '../utils/validate';
+import Project from "../db/models/Project";
+import { checkPermissionInProject } from "../utils/validate";
 
 const getAllProject = async ({ userId }) => {
   const projectList = await Project.findByUserId({ userId });
@@ -24,7 +24,6 @@ const editProject = async ({ _id, newValues, userId }) => {
 };
 
 const removeProject = async ({ _id, userId }) => {
-
   const errorMessage = await checkPermissionInProject(_id, userId);
   if (errorMessage) return errorMessage;
 
