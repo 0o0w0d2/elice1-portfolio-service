@@ -1,7 +1,7 @@
-import { CertificationModel } from "../schemes/certification";
+import { CertificationModel } from '../schemas/certification';
 
 const findByUserId = async ({ userId }) => {
-  const certificationList = await CertificationtModel.find({ userId });
+  const certificationList = await CertificationModel.find({ userId });
 
   return certificationList;
 };
@@ -33,7 +33,7 @@ const updateCertification = async ({ _id, newValues }) => {
 };
 
 const deleteCertification = async ({ _id }) => {
-  const deleteCertification = await CertificationModel.findOneAndDelete({
+  const deletedCertification = await CertificationModel.findOneAndDelete({
     _id,
   });
 
@@ -45,4 +45,5 @@ export default {
   findByDataId,
   createCertification,
   updateCertification,
+  deleteCertification,
 };
