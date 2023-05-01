@@ -2,7 +2,6 @@ import { AwardModel } from '../schemas/award';
 
 const Award = {
   findByUserId: async (userId) => {
-    console.log(userId);
     try {
       const awards = await AwardModel.find({ userId });
       return awards;
