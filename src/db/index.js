@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import { User } from './models/User';
 import { Education } from './models/Education';
-import { Project } from './models/Project';
+import Project from './models/Project';
 import { Award } from './models/Award';
-import { Certification } from './models/Certification';
+import Certification from './models/Certification';
 
 const DB_URL =
   process.env.MONGODB_URL ||
