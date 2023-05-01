@@ -9,7 +9,6 @@ awardRouter.get(
   login_required,
   asyncHandler(async (req, res) => {
     const { userId } = req.params;
-    console.log(userId);
     const awardsForCurrentUser = await AwardService.getAllAwards(userId);
     res.status(200).json({
       message: `All awards for the user retrieved successfully.`,
