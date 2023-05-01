@@ -3,12 +3,6 @@ import { nanoid } from 'nanoid';
 
 const AwardSchema = new Schema(
   {
-    id: {
-      type: String,
-      required: true,
-      default: () => nanoid(),
-      index: true,
-    },
     title: {
       type: String,
       required: true,
@@ -21,7 +15,7 @@ const AwardSchema = new Schema(
       type: Number,
       required: true,
     },
-    user: {
+    userId: {
       type: String,
       ref: 'User',
       required: true,
