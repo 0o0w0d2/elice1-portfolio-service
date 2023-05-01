@@ -12,7 +12,7 @@ certificationRouter.get(
   login_required,
   asyncHandler (async (req, res) => {
   const userId = req.params.userId;
-  const allcertifications = await certification.find({ userId });
+  const allcertifications = await certificationService.getAllCertification({ userId });
   
   if (allcertifications.errorMessage) {
     throw new Error(allcertifications.errorMessage);
@@ -34,7 +34,7 @@ certificationrouter.post(
 
   validateValue(certification)
 
-  const addNewCertification = await certification.addcertification({ certification })
+  const addNewCertification = await certificationService.addCertification({ certification })
 
   res.status(201).send(addNewCertification);
 })
@@ -60,7 +60,7 @@ userId,
 });
 
 if (editCertification.errorMessage) {
-  throw new Error(editProject.errorMessage);
+  throw new Error(editCertification.errorMessage);
 }
 
   res.status(200).send(editCertification);
@@ -74,7 +74,7 @@ certificationRouter.delete(
     const userId = req.currentUserId;
     const _id = req.params._id;
 
-    const deleteCertification = await certificationService.removecertification({ _id, userId });
+    const deleteCertification = await certificationService.removeCertification({ _id, userId });
 
     if (deleteCertification.errorMessage) {
       throw new Error(deleteCertification.errorMessage);
