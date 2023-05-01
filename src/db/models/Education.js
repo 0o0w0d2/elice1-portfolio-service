@@ -7,7 +7,7 @@ class Education {
     return educationList;
   }
 
-  static async findById({ _id }) {
+  static async findByDataId({ _id }) {
     // ID로 학력 조회
     const educationList = await EducationModel.findById({ _id });
     return educationList;

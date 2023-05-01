@@ -1,4 +1,5 @@
-import { Award, Education, Project } from '../db';
+import { Education } from '../db';
+import Project from '../db/models/Project';
 
 
 const validateValue = (values) => {
@@ -18,7 +19,7 @@ const checkPermission = (Model) => async (_id, userId)=> {
         const errorMessage = await checkPermissionInEducation(_id,userId);
         if(errorMessage) return errorMessage;
     */
-    const data = await Model.findById({_id});
+    const data = await Model.findByDataId({_id});
     if(!data){
         const errorMessage = 'Not found';
         return { errorMessage };
@@ -31,5 +32,6 @@ const checkPermission = (Model) => async (_id, userId)=> {
 };
 
 const checkPermissionInEducation = checkPermission(Education)
+const checkPermissionInProject = checkPermission(Project)
 
-export { validateValue, checkPermissionInEducation };
+export { validateValue, checkPermissionInEducation, checkPermissionInProject };
