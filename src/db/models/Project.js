@@ -6,7 +6,7 @@ const findByUserId = async ({ userId }) => {
     return projectList;
 }
 
-const findByProjectId = async ({ _id }) => {
+const findByDataId = async ({ _id }) => {
     const findProject = await ProjectModel.findById(_id);
 
     return findProject;
@@ -34,4 +34,4 @@ const deleteProject = async ({ _id}) => {
     return deletedProject;
 }
 
-export default { findByUserId, findByProjectId, createProject, updateProject, deleteProject };
+export default { findByUserId, findByDataId, createProject, updateProject, deleteProject };

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { login_required } from '../middlewares/login_required';
 import projectService from '../services/projectService';
 import asyncHandler from '../utils/asyncHandler';
+import { validateValue } from '../utils/validate';
 
 const projectRouter = Router();
 
@@ -28,9 +29,7 @@ projectRouter.post(
     const { title, description, startDate, endDate } = req.body;
     const project = { userId, title, description, startDate, endDate };
 
-    if (!title || !startDate || !endDate) {
-      throw new Error('프로젝트 제목이나 날짜가 입력되어 있는지 확인해주세요.');
-    }
+    validateValue(project);
 
     const addNewProject = await projectService.addProject({ project });
 
@@ -48,9 +47,7 @@ projectRouter.put(
 
     const newValues = { title, description, startDate, endDate };
 
-    if (!title || !startDate || !endDate) {
-      throw new Error('프로젝트 제목이나 날짜가 입력되어 있는지 확인해주세요.');
-    }
+    validateValue(newValues);
 
     const editProject = await projectService.editProject({
       _id,
