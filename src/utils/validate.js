@@ -1,5 +1,4 @@
-import { Education } from '../db';
-import Project from '../db/models/Project';
+import { Education, Project, Certification } from '../db';
 
 
 const validateValue = (values) => {
@@ -31,7 +30,8 @@ const checkPermission = (Model) => async (_id, userId)=> {
     return;
 };
 
-const checkPermissionInEducation = checkPermission(Education)
-const checkPermissionInProject = checkPermission(Project)
+const checkPermissionInEducation = checkPermission(Education);
+const checkPermissionInProject = checkPermission(Project);
+const checkPermissionInCertification = checkPermission(Certification);
 
-export { validateValue, checkPermissionInEducation, checkPermissionInProject };
+export { validateValue, checkPermissionInEducation, checkPermissionInProject, checkPermissionInCertification };
