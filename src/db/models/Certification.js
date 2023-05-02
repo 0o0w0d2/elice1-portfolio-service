@@ -2,7 +2,6 @@ import { CertificationModel } from '../schemas/certification';
 
 const findByUserId = async ({ userId }) => {
   const certificationList = await CertificationModel.find({ userId });
-
   return certificationList;
 };
 
@@ -14,7 +13,6 @@ const findByDataId = async ({ _id }) => {
 
 const createCertification = async ({ certification }) => {
   const newCertification = await CertificationModel.create(certification);
-
   return newCertification;
 };
 
