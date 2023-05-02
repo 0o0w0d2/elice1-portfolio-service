@@ -6,6 +6,7 @@ import { awardRouter } from './routers/awardRouter';
 import { errorMiddleware } from './middlewares/errorMiddleware';
 import { projectRouter } from './routers/projectRouter';
 import { certificationRouter } from './routers/certificationRouter';
+import { commentRouter } from './routers/commentRouter';
 
 const app = express();
 
