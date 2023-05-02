@@ -1,5 +1,5 @@
-import Certification from "../db/models/Certification";
-import { checkPermissionInCertification } from "../utils/validate";
+import Certification from '../db/models/Certification';
+// import { checkPermissionInCertification } from '../utils/validate';
 
 const getAllCertification = async ({ userId }) => {
   const certification = await Certification.findByUserId({ userId });
@@ -16,8 +16,8 @@ const addCertification = async ({ certification }) => {
 };
 
 const editCertification = async ({ _id, newValues, userId }) => {
-  const errorMessage = await checkPermissionInCertification(_id, userId);
-  if (errorMessage) return errorMessage;
+  // const errorMessage = await checkPermissionInCertification(_id, userId);
+  // if (errorMessage) return errorMessage;
 
   const editedCertification = await Certification.updateCertification({
     _id,
@@ -28,8 +28,8 @@ const editCertification = async ({ _id, newValues, userId }) => {
 };
 
 const removeCertification = async ({ _id, userId }) => {
-  const errorMessage = await checkPermissionInCertification(_id, userId);
-  if (errorMessage) return errorMessage;
+  // const errorMessage = await checkPermissionInCertification(_id, userId);
+  // if (errorMessage) return errorMessage;
 
   const removeCertification = await Certification.deleteCertification({ _id });
 

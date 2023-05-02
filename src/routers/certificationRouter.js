@@ -2,11 +2,11 @@ import { Router } from 'express';
 import { login_required } from '../middlewares/login_required';
 import certificationService from '../services/certificationService';
 import asyncHandler from '../utils/asyncHandler';
-// import { validateValue } from '../utils/validate';
+import { validateValue } from '../utils/validate';
 
 const certificationRouter = Router();
 
-//Read
+// Read
 certificationRouter.get(
   '/certificates/:userId',
   login_required,
@@ -15,7 +15,6 @@ certificationRouter.get(
     const allCertifications = await certificationService.getAllCertification({
       userId,
     });
-
     if (allCertifications.errorMessage) {
       throw new Error(allCertifications.errorMessage);
     }
@@ -24,7 +23,7 @@ certificationRouter.get(
   })
 );
 
-//Create
+// Create
 certificationRouter.post(
   '/certificates',
   login_required,
@@ -36,16 +35,16 @@ certificationRouter.post(
       issuanceDate,
       issuingAuthority,
     } = req.body;
+
     const certification = {
       userId,
       certificationName,
       certificationNumber,
       issuanceDate,
-      issuanceDate,
       issuingAuthority,
     };
 
-    // validateValue(certification);
+    validateValue(certification);
 
     const addNewCertification = await certificationService.addCertification({
       certification,
@@ -55,7 +54,7 @@ certificationRouter.post(
   })
 );
 
-//Update
+// Update
 certificationRouter.put(
   '/certificates/:_id',
   login_required,
@@ -76,7 +75,7 @@ certificationRouter.put(
       issuingAuthority,
     };
 
-    // validateValue(newValues);
+    validateValue(newValues);
 
     const editCertification = await certificationService.editCertification({
       _id,
@@ -92,6 +91,7 @@ certificationRouter.put(
   })
 );
 
+// Delete
 certificationRouter.delete(
   '/certificates/:_id',
   login_required,
