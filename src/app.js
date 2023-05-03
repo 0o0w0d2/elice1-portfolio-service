@@ -41,16 +41,29 @@ io.on('connection', (socket) => {
     socket.join(roomId);
   });
 
+  // socket.on('chatMessage', async ({ senderId, receiverId, message }) => {
+  //   const roomId = [senderId, receiverId].sort().join('-');
+  //   const chat = new ChatModel({
+  //     roomId,
+  //     senderId,
+  //     receiverId,
+  //     message,
+  //   });
+
+  //   await chat.save();
+  //   io.to(roomId).emit('newMessage', {
+  //     senderId: senderId,
+  //     receiverId: receiverId,
+  //     message: message,
+  //   });
+  // });
   socket.on('chatMessage', async ({ senderId, receiverId, message }) => {
     const roomId = [senderId, receiverId].sort().join('-');
-    const chat = new ChatModel({
-      roomId,
-      senderId,
-      receiverId,
-      message,
-    });
+    const query = { roomId: roomId };
+    const update = { $push: { messages: { senderId, receiverId, message } } };
+    const options = { new: true, upsert: true };
 
-    await chat.save();
+    const chat = await ChatModel.findOneAndUpdate(query, update, options);
     io.to(roomId).emit('newMessage', {
       senderId: senderId,
       receiverId: receiverId,
