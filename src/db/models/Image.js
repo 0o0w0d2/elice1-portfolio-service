@@ -20,16 +20,15 @@ class Image {
 
   static async change({ imageInfo }) {
     const { userId, dataId, image } = imageInfo;
-    const changeImage = await ImageModel.findOneAndUpdate(
+    const changeImage = await ImageModel.updateOne(
       { userId, dataId },
       { image },
-      { new: true }
     );
     return changeImage;
   }
 
   static async remove({ userId, dataId }) {
-    const removeImage = await ImageModel.findOneAndDelete({ userId, dataId });
+    const removeImage = await ImageModel.deleteOne({ userId, dataId });
     return removeImage;
   }
 }

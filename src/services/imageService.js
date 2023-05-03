@@ -2,12 +2,11 @@ import { Image } from '../db';
 import { checkPermissionInImage } from '../utils/validate';
 
 class imageService {
-    static async getImage({ userId, dataId }) {
-        let gotImage = {};
-        if(dataId === 'profile'){
-            gotImage = await Image.findByUserId({ userId, dataId });
-        }else{
-            gotImage = await Image.findByDataId({ _id:dataId });
+    static async getImage({ dataId }) {
+        const gotImage = await Image.findByDataId({ _id:dataId });
+        if (!gotImage) {
+            const errorMessage = 'No image';
+            return { errorMessage };
         }
         return gotImage;
     }
@@ -22,7 +21,12 @@ class imageService {
         const _id = dataId;
     
         const errorMessage = await checkPermissionInImage(_id, userId);
-        if (errorMessage) return errorMessage;
+        if (errorMessage?.errorMessage === 'Not found'){
+            const newImage = await Image.add({ imageInfo });
+            return newImage;
+        }else if(errorMessage){
+            return errorMessage;
+        }
     
         const changedImage = await Image.change({ imageInfo });
         return changedImage;

@@ -12,10 +12,9 @@ const upload = multer({storage:storage});
 
 
 imageRouter.get(
-    '/image/:userId',
+    '/image/:userId/:dataId',
     asyncHandler(async (req, res, next) => {
-        const { userId } = req.params;
-        const { dataId } = req.body;
+        const { userId, dataId } = req.params;
 
         validateValue({userId, dataId});
 
@@ -23,7 +22,13 @@ imageRouter.get(
         if (image.errorMessage) {
           throw new Error(image.errorMessage);
         }
-        res.status(200).send(image);
+        const binaryData = Buffer.from(image.image.data, 'binary');
+        const base64 = binaryData.toString('base64');
+        const returnImage = {
+            contentType:image.image.contentType,
+            data:base64,
+        }
+        res.status(200).send(returnImage);
     })
 );
 
@@ -52,11 +57,12 @@ imageRouter.post(
 );
 
 imageRouter.put(
-    '/image/:dataId',
+    '/image',
     login_required,
+    upload.single('image'),
     asyncHandler(async (req, res, next) => {
         const userId = req.currentUserId;
-        const { dataId } = req.params;
+        const { dataId } = req.body;
         const { buffer, mimetype } = req.file;
         const imageInfo = {
             userId,
