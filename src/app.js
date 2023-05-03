@@ -37,20 +37,21 @@ io.on('connection', (socket) => {
 
   // 채팅방 들어가기
   socket.on('joinRoom', ({ senderId, receiverId }) => {
-    const room = [senderId, receiverId].sort().join('-');
-    socket.join(room);
+    const roomId = [senderId, receiverId].sort().join('-');
+    socket.join(roomId);
   });
 
   socket.on('chatMessage', async ({ senderId, receiverId, message }) => {
+    const roomId = [senderId, receiverId].sort().join('-');
     const chat = new ChatModel({
+      roomId,
       senderId,
       receiverId,
       message,
     });
 
     await chat.save();
-    const room = [senderId, receiverId].sort().join('-');
-    io.to(room).emit('newMessage', {
+    io.to(roomId).emit('newMessage', {
       senderId: senderId,
       receiverId: receiverId,
       message: message,
