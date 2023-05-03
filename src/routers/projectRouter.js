@@ -1,13 +1,13 @@
-import { Router } from "express";
-import { login_required } from "../middlewares/login_required";
-import projectService from "../services/projectService";
-import asyncHandler from "../utils/asyncHandler";
-import { validateValue } from "../utils/validate";
+import { Router } from 'express';
+import { login_required } from '../middlewares/login_required';
+import projectService from '../services/projectService';
+import asyncHandler from '../utils/asyncHandler';
+import { validateValue } from '../utils/validate';
 
 const projectRouter = Router();
 
 projectRouter.get(
-  "/project/:userId",
+  '/project/:userId',
   login_required,
   asyncHandler(async (req, res, next) => {
     const userId = req.params.userId;
@@ -22,7 +22,7 @@ projectRouter.get(
 );
 
 projectRouter.post(
-  "/project",
+  '/project',
   login_required,
   asyncHandler(async (req, res, next) => {
     const userId = req.currentUserId;
@@ -37,8 +37,8 @@ projectRouter.post(
   })
 );
 
-projectRouter.put(
-  "/project/:_id",
+projectRouter.patch(
+  '/project/:_id',
   login_required,
   asyncHandler(async (req, res, next) => {
     const userId = req.currentUserId;
@@ -64,7 +64,7 @@ projectRouter.put(
 );
 
 projectRouter.delete(
-  "/project/:_id",
+  '/project/:_id',
   login_required,
   asyncHandler(async (req, res, next) => {
     const userId = req.currentUserId;
