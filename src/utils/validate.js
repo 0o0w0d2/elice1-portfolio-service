@@ -1,4 +1,4 @@
-import { Education, Project, Certification, Image } from '../db';
+import { Education, Project, Certification, Image, Comment } from '../db';
 
 
 const validateValue = (values) => {
@@ -34,11 +34,13 @@ const checkPermissionInEducation = checkPermission(Education);
 const checkPermissionInProject = checkPermission(Project);
 const checkPermissionInCertification = checkPermission(Certification);
 const checkPermissionInImage = checkPermission(Image);
+const checkPermissionInComment = checkPermission(Comment);
 
 export {
     validateValue,
     checkPermissionInEducation,
     checkPermissionInProject,
     checkPermissionInCertification,
-    checkPermissionInImage
+    checkPermissionInImage,
+    checkPermissionInComment,
 };

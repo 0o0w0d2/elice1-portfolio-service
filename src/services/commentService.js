@@ -1,10 +1,9 @@
 import { Comment } from '../db';
-
+import { checkPermissionInComment } from '../utils/validate';
 
 class commentService {
-  // postId를 통해 댓글 목록들을 불러옴
   static async getComment({ postId }) {
-    const commentList = await Comment.findByUserId({ postId });
+    const commentList = await Comment.findByPostId({ postId });
     return commentList;
   }
 
@@ -16,6 +15,8 @@ class commentService {
   static async editComment({ userId, comment }) {
     const { _id } = comment;
 
+    const errorMessage = await checkPermissionInComment(_id, userId);
+    if (errorMessage) return errorMessage;
 
     const editedComment = await Comment.edit({ comment });
     return editedComment;
@@ -23,6 +24,8 @@ class commentService {
 
   static async removeComment({ _id, userId }) {
 
+    const errorMessage = await checkPermissionInComment(_id, userId);
+    if (errorMessage) return errorMessage;
 
     const removedComment = await Comment.remove({ _id });
     return removedComment;

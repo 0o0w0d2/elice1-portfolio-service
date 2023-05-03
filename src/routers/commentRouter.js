@@ -28,6 +28,8 @@ commentRouter.post(
     const { content, name } = req.body;
     const comment = { postId, userId, content, name };
 
+    validateValue(comment);
+
     const addNewComment = await commentService.addComment({ comment });
     res.status(201).send(addNewComment);
   })
@@ -57,12 +59,11 @@ commentRouter.put(
     res.status(200).send(editComment);
   })
 );
-// 삭제는 delete 메소드
+
 commentRouter.delete(
   '/comment/:postId/:_id',
   login_required,
   asyncHandler(async (req, res, next) => {
-    const { postId } = req.params;
     const userId = req.currentUserId;
     const { _id } = req.params;
     const deleteComment = await commentService.removeComment({
