@@ -1,5 +1,8 @@
 import cors from 'cors';
 import express from 'express';
+import { Server } from 'socket.io';
+import http from 'http';
+
 import { userAuthRouter } from './routers/userRouter';
 import { educationRouter } from './routers/educationRouter';
 import { awardRouter } from './routers/awardRouter';
@@ -8,6 +11,9 @@ import { projectRouter } from './routers/projectRouter';
 import { certificationRouter } from './routers/certificationRouter';
 import { commentRouter } from './routers/commentRouter';
 import { imageRouter } from './routers/imageRouter';
+
+import { ChatModel } from './db/schemas/chat';
+import { chatRouter } from './routers/chatRouter';
 
 const app = express();
 
@@ -20,28 +26,60 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+  },
+});
+io.on('connection', (socket) => {
+  console.log('사용자가 접속했습니다. ', socket.id);
+
+  // 채팅방 들어가기
+  socket.on('joinRoom', ({ senderId, receiverId }) => {
+    const room = [senderId, receiverId].sort().join('-');
+    socket.join(room);
+  });
+
+  socket.on('chatMessage', async ({ senderId, receiverId, message }) => {
+    const chat = new ChatModel({
+      senderId,
+      receiverId,
+      message,
+    });
+
+    await chat.save();
+    const room = [senderId, receiverId].sort().join('-');
+    io.to(room).emit('newMessage', {
+      senderId: senderId,
+      receiverId: receiverId,
+      message: message,
+    });
+  });
+
+  socket.on('disconnect', () => {
+    console.log('사용자 접속이 해제되었습니다.', socket.id);
+  });
+});
+
 // 기본 페이지
 app.get('/', (req, res) => {
   res.send('안녕하세요, 레이서 프로젝트 API 입니다.');
 });
 
 // router, service 구현 (userAuthRouter는 맨 위에 있어야 함.)
-// app.use([
-//   userAuthRouter,
-//   educationRouter,
-//   awardRouter,
-//   projectRouter,
-//   certificationRouter,
-// ]);
-app.use(userAuthRouter);
-app.use(educationRouter);
-app.use(awardRouter);
-app.use(projectRouter);
-app.use(certificationRouter);
-app.use(commentRouter);
-app.use(imageRouter);
+app.use([
+  userAuthRouter,
+  educationRouter,
+  awardRouter,
+  projectRouter,
+  certificationRouter,
+  commentRouter,
+  imageRouter,
+  chatRouter,
+]);
 
 // 순서 중요 (router 에서 next() 시 아래의 에러 핸들링  middleware로 전달됨)
 app.use(errorMiddleware);
 
-export { app };
+export { server, app };

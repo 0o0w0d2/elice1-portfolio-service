@@ -148,11 +148,13 @@ userAuthRouter.delete(
       userId,
     });
 
-    if (errorMessage) res.status(404).json({ message: errorMessage });
-
-    res.status(204).json({
-      message: '탈퇴가 성공적으로 이루어졌습니다.',
-    });
+    if (errorMessage) {
+      res.status(404).json({ message: errorMessage });
+    } else {
+      res.status(200).json({
+        message: '탈퇴가 성공적으로 이루어졌습니다.',
+      });
+    }
   }
 );
 
