@@ -10,7 +10,7 @@ chatRouter.post(
   login_required,
   asyncHandler(async (req, res) => {
     const { senderId, receiverId, message, roomId } = req.body;
-
+    console.log(senderId, receiverId, message, roomId);
     const chat = await ChatModel.findOne({ roomId });
     if (!chat) {
       const newChat = new ChatModel({
