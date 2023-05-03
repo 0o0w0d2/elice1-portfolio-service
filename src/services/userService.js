@@ -121,6 +121,17 @@ class userAuthService {
 
     return user;
   }
+
+  static async removeUser({ userId }) {
+    const user = await User.remove({ userId });
+
+    if (!user) {
+      const errorMessage = `회원 정보가 존재하지 않습니다.`;
+      return { errorMessage };
+    }
+
+    return { user };
+  }
 }
 
 export { userAuthService };
