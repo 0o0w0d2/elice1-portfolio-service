@@ -1,7 +1,7 @@
 import { CommentModel } from '../schemas/comment';
 
 class Comment {
-  static async findByUserId({ postId }) {
+  static async findByPostId({ postId }) {
 
     const commentList = await CommentModel.find({ postId });
     return commentList;
@@ -24,7 +24,7 @@ class Comment {
     const { _id, content, name } = comment;
     const editComment = await CommentModel.findOneAndUpdate(
       { _id },          // 댓글 번호
-      { name, content },      // 댓글 내용
+      { content },      // 댓글 내용
       { new: true }
     );
     return editComment;
