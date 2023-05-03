@@ -28,7 +28,6 @@ imageRouter.get(
             contentType:image.image.contentType,
             data:base64,
         }
-        console.log(returnImage)
         res.status(200).send(returnImage);
     })
 );
@@ -58,11 +57,12 @@ imageRouter.post(
 );
 
 imageRouter.put(
-    '/image/:dataId',
+    '/image',
     login_required,
+    upload.single('image'),
     asyncHandler(async (req, res, next) => {
         const userId = req.currentUserId;
-        const { dataId } = req.params;
+        const { dataId } = req.body;
         const { buffer, mimetype } = req.file;
         const imageInfo = {
             userId,
