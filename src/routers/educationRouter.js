@@ -34,7 +34,7 @@ educationRouter.post(
   })
 );
 // 변경은 put 메소드, education = { _id:학력,schoolName:학교명,major:전공,graduationTypeCode:졸업상태}
-educationRouter.put(
+educationRouter.patch(
   '/education/:_id',
   login_required,
   asyncHandler(async (req, res, next) => {
