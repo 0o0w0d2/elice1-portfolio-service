@@ -38,6 +38,7 @@ io.on('connection', (socket) => {
   // 채팅방 들어가기
   socket.on('joinRoom', ({ senderId, receiverId }) => {
     const roomId = [senderId, receiverId].sort().join('-');
+    console.log('roomid', roomId);
     socket.join(roomId);
   });
 
