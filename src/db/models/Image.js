@@ -27,8 +27,8 @@ class Image {
     return changeImage;
   }
 
-  static async remove({ userId, dataId }) {
-    const removeImage = await ImageModel.deleteOne({ userId, dataId });
+  static async remove({ dataId }) {
+    const removeImage = await ImageModel.deleteOne({ dataId });
     return removeImage;
   }
 }
