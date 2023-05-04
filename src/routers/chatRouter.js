@@ -42,6 +42,47 @@ chatRouter.get(
   })
 );
 
+chatRouter.get(
+  '/chat/:roomId/:userId',
+  login_required,
+  asyncHandler(async (req, res) => {
+    const { roomId, userId } = req.params;
+    console.log('GET roomId:', roomId);
+    const chat = await ChatModel.findOne({
+      roomId,
+      $or: [{ senderId: userId }, { receiverId: userId }],
+    });
+    console.log(chat);
+    if (!chat) {
+      return res.status(404).json({ message: 'Chat room not found' });
+    }
+    return res.status(200).json({ messages: chat.messages });
+  })
+);
+
+chatRouter.get(
+  '/chat/user/:userId',
+  login_required,
+  asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    console.log('GET chats for user:', userId);
+    const chatRooms = await ChatModel.find({
+      messages: {
+        $elemMatch: {
+          $or: [{ senderId: userId }, { receiverId: userId }],
+        },
+      },
+    });
+    console.log(chatRooms);
+    if (!chatRooms || chatRooms.length === 0) {
+      return res
+        .status(404)
+        .json({ message: 'No chats found for the specified user' });
+    }
+    return res.status(200).json({ chatRooms });
+  })
+);
+
 chatRouter.delete(
   '/chat/:roomId',
   login_required,
