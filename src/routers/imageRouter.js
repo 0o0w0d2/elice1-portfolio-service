@@ -79,7 +79,11 @@ imageRouter.put(
         if (changedImage.errorMessage) {
           throw new Error(changedImage.errorMessage);
         }
-        res.status(200).send(changedImage);
+        if(changedImage.modifiedCount){
+            res.status(200).send(changedImage);
+        }else{
+            res.status(201).send();
+        }
         
     })
 )
