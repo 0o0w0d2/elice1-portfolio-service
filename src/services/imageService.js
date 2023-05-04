@@ -37,7 +37,7 @@ class imageService {
         const errorMessage = await checkPermissionInImage(_id, userId);
         if (errorMessage) return errorMessage;
     
-        const removedImage = await Image.remove({ userId, dataId });
+        const removedImage = await Image.remove({ dataId });
         return removedImage;
     }
   }
