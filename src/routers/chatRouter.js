@@ -32,7 +32,9 @@ chatRouter.get(
   login_required,
   asyncHandler(async (req, res) => {
     const { roomId } = req.params;
+    console.log('GET roomId:', roomId);
     const chat = await ChatModel.findOne({ roomId });
+    console.log(chat);
     if (!chat) {
       return res.status(404).json({ message: 'Chat room not found' });
     }
