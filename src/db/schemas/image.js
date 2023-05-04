@@ -10,7 +10,7 @@ const ImageSchema = new Schema(
         },
         dataId:{    
             //어떤 곳에서 사용되는지.
-            //프로필사진이라면 dataId==='profile'을 사용하고
+            //프로필사진이라면 dataId===userId를 사용하고
             //다른 곳에선 그 카드의 id 사용.
             type:String,
             required:true,
