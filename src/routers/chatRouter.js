@@ -26,6 +26,29 @@ chatRouter.post(
     }
   })
 );
+chatRouter.get(
+  '/chat/user/:userId',
+  login_required,
+  asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    console.log('GET chats for user:', userId);
+    const chatRooms = await ChatModel.find({
+      messages: {
+        $elemMatch: {
+          $or: [{ senderId: userId }, { receiverId: userId }],
+        },
+      },
+      // roomId: new RegExp(`.` + userId + `.`),
+    });
+    console.log(chatRooms);
+    if (!chatRooms || chatRooms.length === 0) {
+      return res
+        .status(404)
+        .json({ message: 'No chats found for the specified user' });
+    }
+    return res.status(200).json({ chatRooms });
+  })
+);
 
 chatRouter.get(
   '/chat/:roomId',
@@ -57,29 +80,6 @@ chatRouter.get(
       return res.status(404).json({ message: 'Chat room not found' });
     }
     return res.status(200).json({ messages: chat.messages });
-  })
-);
-
-chatRouter.get(
-  '/chat/user/:userId',
-  login_required,
-  asyncHandler(async (req, res) => {
-    const { userId } = req.params;
-    console.log('GET chats for user:', userId);
-    const chatRooms = await ChatModel.find({
-      messages: {
-        $elemMatch: {
-          $or: [{ senderId: userId }, { receiverId: userId }],
-        },
-      },
-    });
-    console.log(chatRooms);
-    if (!chatRooms || chatRooms.length === 0) {
-      return res
-        .status(404)
-        .json({ message: 'No chats found for the specified user' });
-    }
-    return res.status(200).json({ chatRooms });
   })
 );
 
