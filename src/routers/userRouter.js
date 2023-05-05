@@ -111,6 +111,7 @@ userAuthRouter.get(
   login_required,
   asyncHandler(async function (req, res, next) {
     const userId = req.params.id;
+
     const currentUserInfo = await userAuthService.getUserInfo({ userId });
 
     if (currentUserInfo.errorMessage) {
@@ -136,7 +137,6 @@ userAuthRouter.delete(
   async (req, res, next) => {
     const userId = req.currentUserId;
     const { id } = req.params;
-    console.log(userId, id);
 
     if (userId !== id) {
       res.status(403).json({
