@@ -33,6 +33,11 @@ class User {
     );
     return updatedUser;
   }
+
+  static async remove({ userId }) {
+    const withdrawalUser = await UserModel.findOneAndDelete({ id: userId });
+    return withdrawalUser;
+  }
 }
 
 export { User };

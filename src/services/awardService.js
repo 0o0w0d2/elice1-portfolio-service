@@ -9,7 +9,6 @@ const AwardService = {
     return allAwards;
   },
   createNewAward: async (award) => {
-    console.log(award);
     const newAward = await Award.create(award);
     return newAward;
   },
@@ -18,7 +17,6 @@ const AwardService = {
     return updateAward;
   },
   deleteAward: async (awardId) => {
-    console.log('service', awardId);
     const deleteAward = await Award.delete(awardId);
     return deleteAward;
   },

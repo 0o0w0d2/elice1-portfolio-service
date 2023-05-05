@@ -111,6 +111,7 @@ userAuthRouter.get(
   login_required,
   asyncHandler(async function (req, res, next) {
     const userId = req.params.id;
+
     const currentUserInfo = await userAuthService.getUserInfo({ userId });
 
     if (currentUserInfo.errorMessage) {
@@ -129,5 +130,32 @@ userAuthRouter.get('/afterlogin', login_required, function (req, res, next) {
       `안녕하세요 ${req.currentUserId}님, jwt 웹 토큰 기능 정상 작동 중입니다.`
     );
 });
+
+userAuthRouter.delete(
+  '/user/:id/withdraw',
+  login_required,
+  async (req, res, next) => {
+    const userId = req.currentUserId;
+    const { id } = req.params;
+
+    if (userId !== id) {
+      res.status(403).json({
+        message: '권한이 없습니다.',
+      });
+    }
+
+    const { user, errorMessage } = await userAuthService.removeUser({
+      userId,
+    });
+
+    if (errorMessage) {
+      res.status(404).json({ message: errorMessage });
+    } else {
+      res.status(200).json({
+        message: '탈퇴가 성공적으로 이루어졌습니다.',
+      });
+    }
+  }
+);
 
 export { userAuthRouter };
