@@ -10,7 +10,7 @@ chatRouter.post(
   login_required,
   asyncHandler(async (req, res) => {
     const { senderId, receiverId, message, roomId } = req.body;
-    console.log(senderId, receiverId, message, roomId);
+
     const chat = await ChatModel.findOne({ roomId });
     if (!chat) {
       const newChat = new ChatModel({
@@ -41,14 +41,15 @@ chatRouter.post(
 //     return res.status(200).json({ messages: chat.messages });
 //   })
 // );
+
 chatRouter.get(
   '/chat/:roomId',
   login_required,
   asyncHandler(async (req, res) => {
     const { roomId } = req.params;
-    console.log('GET roomId2s:', roomId);
+
     const chat = await ChatModel.findOne({ roomId });
-    console.log(chat.messages);
+    // console.log(chat.messages);
     if (!chat) {
       // return a 201 status code with an empty array when there is no chat history found
       return res.status(201).json({ messages: [] });
@@ -62,16 +63,16 @@ chatRouter.get(
   login_required,
   asyncHandler(async (req, res) => {
     const { userId } = req.params;
-    console.log('GET chats for user:', userId);
+
     const chatRooms = await ChatModel.find({
-      // messages: {
-      //   $elemMatch: {
-      //     $or: [{ senderId: userId }, { receiverId: userId }],
-      //   },
-      // },
+      messages: {
+        $elemMatch: {
+          $or: [{ senderId: userId }, { receiverId: userId }],
+        },
+      },
       // roomId: new RegExp(`.` + userId + `.`),
     });
-    console.log(chatRooms);
+
     if (!chatRooms || chatRooms.length === 0) {
       return res
         .status(404)
