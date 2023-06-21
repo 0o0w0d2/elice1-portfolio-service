@@ -5,6 +5,9 @@ import './ChatBox.css';
 import * as api from '../../api';
 import ChatList from './ChatList';
 
+const backendPortNumber = '5001';
+const serverUrl =
+  'http://' + window.location.hostname + ':' + backendPortNumber + '/';
 const ChatBox = ({
   show,
   handleClose,
@@ -12,9 +15,10 @@ const ChatBox = ({
   receiverId,
   isMyPortfolio,
   // isChatOn,
+  chatHistory,
+  counterpart,
   resetSelectedRoom,
 }) => {
-  console.log('senderId:', senderId, 'receiverId:', receiverId);
   const [message, setMessage] = useState('');
   const [socket, setSocket] = useState(null);
   const [chatList, setChatList] = useState([]);
@@ -61,7 +65,7 @@ const ChatBox = ({
     try {
       const roomId = [senderId, receiverId].sort().join('-');
       const response = await api.get(`chat/${roomId}`);
-      console.log('Response data:', response.data);
+
       setChatList(response.data.messages);
       setHasChatHistory(response.data.messages.length > 0);
       setIsChatActive(true);
@@ -110,14 +114,13 @@ const ChatBox = ({
   //   };
   // }, [senderId, receiverId, hasChatHistory, isMyPortfolio]);
   useEffect(() => {
-    const newSocket = io(`localhost:5001`, {
+    const newSocket = io(`${serverUrl}`, {
       cors: { origin: '*' },
     });
 
     newSocket.emit('joinRoom', { senderId, receiverId });
-    console.log('joinRoom emitted with', { senderId, receiverId });
+
     newSocket.on('newMessage', (message) => {
-      console.log('newMessage received with', message);
       setChatList((prevChatList) =>
         Array.isArray(prevChatList) ? [...prevChatList, message] : [message]
       );
@@ -142,16 +145,14 @@ const ChatBox = ({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log('handleSubmit called with message:', message);
+
     socket.emit('chatMessage', { senderId, receiverId, message });
-    console.log('chatMessage emitted:', { senderId, receiverId, message });
+
     setMessage('');
   };
 
-  console.log('chatList:', chatList);
   const startChat = async (event) => {
     event.stopPropagation();
-    setHasChatHistory(true);
     if (!chatRoomCreated) {
       await socket.emit('createChatRoom', { senderId, receiverId });
       setChatRoomCreated(true);
@@ -159,13 +160,20 @@ const ChatBox = ({
 
     fetchChatHistory(senderId, receiverId).then((chatHistory) => {
       if (chatHistory) {
+        setHasChatHistory(true);
+        setIsChatActive(true);
         setPrevChatList(chatHistory.messages);
+        setChatList(chatHistory.messages);
+      } else {
+        setHasChatHistory(false);
+        setIsChatActive(false);
+        setChatList([{ message: '새로운 채팅이 시작되었습니다.' }]);
       }
-      setIsChatActive(true);
     });
-    setChatList([{ message: '새로운 채팅이 시작되었습니다.' }]);
   };
-
+  useEffect(() => {
+    setChatList(chatHistory);
+  }, [chatHistory]);
   return (
     show && (
       <div className='chat-box'>
@@ -180,6 +188,7 @@ const ChatBox = ({
             userId={senderId}
             senderId={senderId}
             receiverId={receiverId}
+            selectedRoomId={selectedRoomId}
           />
         ) : (
           <>
@@ -195,6 +204,19 @@ const ChatBox = ({
                     Back
                   </button>
                 )}
+                {/* <div className='chat-box-body'>
+                  <ul>
+                    {Array.isArray(chatList) ? (
+                      chatList.map((chat, index) => (
+                        <li key={index} className='chat-message'>
+                          {chat.message}
+                        </li>
+                      ))
+                    ) : (
+                      <li>No chat messages</li>
+                    )}
+                  </ul>
+                </div> */}
                 <div className='chat-box-body'>
                   <ul>
                     {Array.isArray(chatList) ? (
@@ -208,6 +230,52 @@ const ChatBox = ({
                     )}
                   </ul>
                 </div>
+                {/* <div className='chat-box-body'>
+                  <ul>
+                    {(chatList || chatHistory) &&
+                      (chatList || chatHistory).map((chat, index) => (
+                        <li key={index} className='chat-message'>
+                          {chat.message}
+                        </li>
+                      ))}
+                    {!(chatList || chatHistory) && <li>No chat messages</li>}
+                  </ul>
+                </div> */}
+                {/* {hasChatHistory && Array.isArray(chatList) && (
+                  <div className='chat-box-body'>
+                    <ul>
+                      {chatList.map((chat, index) => (
+                        <li key={index} className='chat-message'>
+                          {chat.message}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {(!hasChatHistory || !Array.isArray(chatList)) && (
+                  <div className='chat-box-body'>
+                    <ul>
+                      <li>No chat messages</li>
+                    </ul>
+                  </div>
+                )} */}
+
+                {/* <div className='chat-box-footer'>
+                  <Form onSubmit={handleSubmit}>
+                    <Form.Group>
+                      <Form.Control
+                        type='text'
+                        placeholder='Enter message'
+                        value={message}
+                        onChange={(event) => setMessage(event.target.value)}
+                        name='message'
+                      />
+                    </Form.Group>
+                    <Button variant='primary' type='submit'>
+                      Send
+                    </Button>
+                  </Form>
+                </div> */}
                 <div className='chat-box-footer'>
                   <Form onSubmit={handleSubmit}>
                     <Form.Group>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Grid } from '@mui/material';
+import { Typography, Grid } from '@mui/material';
 import { get, post, patch, delete as del } from '../../api';
 import AwardCard from './AwardCard';
 import CreateAwardButton from './CreateAwardButton';
@@ -78,7 +78,6 @@ const AwardList = ({ portfolioOwnerId, isEditable }) => {
 
   const handleOpenUpdate = (_id) => {
     setSelectedAwardId(_id);
-    console.log('Update clicked for award:', _id);
     setUpdateOpen(true);
   };
 
@@ -88,9 +87,7 @@ const AwardList = ({ portfolioOwnerId, isEditable }) => {
     setNewAward({ title: '', description: '', year: '' });
   };
 
-  const handleOpenDelete = (_id) => {
-    console.log('Delete clicked for award:', _id);
-  };
+  const handleOpenDelete = (_id) => {};
 
   const handleUpdateSubmit = async (_id, updatedAward) => {
     try {
@@ -121,10 +118,10 @@ const AwardList = ({ portfolioOwnerId, isEditable }) => {
   };
 
   return (
-    <Box sx={{width:1050}}>
-      <Typography variant="h4">수상 경력</Typography>
+    <div className='award-box'>
+      <Typography variant='h4'>수상 경력</Typography>
       {awards.length === 0 && (
-        <Typography variant="body2">
+        <Typography variant='body2'>
           등록된 수상 내용이 없습니다.
           <br />
           <br />
@@ -132,7 +129,7 @@ const AwardList = ({ portfolioOwnerId, isEditable }) => {
         </Typography>
       )}
       {awards.length > 0 && (
-        <Grid container spacing={2} key="award-grid">
+        <Grid container spacing={2} key='award-grid'>
           {awards.map((award) => (
             <Grid item key={award._id} xs={12} sm={6} md={4}>
               <AwardCard
@@ -147,9 +144,9 @@ const AwardList = ({ portfolioOwnerId, isEditable }) => {
           ))}
         </Grid>
       )}
-      <Box mt={2}>
+      <div>
         <CreateAwardButton onClick={handleOpenCreate} isEditable={isEditable} />
-      </Box>
+      </div>
       <CreateAwardDialog
         open={createOpen}
         onClose={handleCloseCreate}
@@ -166,7 +163,7 @@ const AwardList = ({ portfolioOwnerId, isEditable }) => {
         handleSubmit={handleUpdateSubmit}
         checkEmpty={checkEmpty}
       />
-    </Box>
+    </div>
   );
 };
 

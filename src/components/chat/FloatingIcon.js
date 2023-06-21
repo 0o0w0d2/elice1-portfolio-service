@@ -15,6 +15,7 @@ const FloatingIcon = ({
   receiver,
   chatList,
   currentUser,
+  setShowButton,
 }) => {
   const [hasStartedChat, setHasStartedChat] = useState(false);
   const [selectedRoomId, setSelectedRoomId] = useState(null);
@@ -24,13 +25,12 @@ const FloatingIcon = ({
   const senderId = userState.user?.id;
 
   const handleClick = () => {
-    console.log('Floating icon clicked');
     setShowChatList((prevShowChatList) => !prevShowChatList);
     setHasStartedChat(true);
+    setShowButton(showChatList);
   };
 
   const handleChatSelect = (roomId) => {
-    console.log('handleChatSelect called with roomId:', roomId);
     setShowChatList(false);
     setSelectedRoomId(roomId);
     setHasStartedChat(true);
@@ -52,7 +52,7 @@ const FloatingIcon = ({
 
       {showChatList && (
         <div className='chat-container'>
-          <ChatBox
+          {/* <ChatBox
             // show={!isMyPortfolio}
             show={true}
             handleClose={() => {
@@ -64,6 +64,21 @@ const FloatingIcon = ({
             selectedRoomId={selectedRoomId}
             resetSelectedRoom={() => setSelectedRoomId(null)}
             isMyPortfolio={isMyPortfolio}
+          /> */}
+          <ChatBox
+            show={showChatList}
+            handleClose={() => {
+              setShowChatList(false);
+              setSelectedRoomId(null);
+              setShowButton(true);
+            }}
+            senderId={senderId}
+            receiverId={receiverId}
+            selectedRoomId={selectedRoomId}
+            resetSelectedRoom={() => setSelectedRoomId(null)}
+            isMyPortfolio={isMyPortfolio}
+            chatHistory={chatList}
+            counterpart={receiver}
           />
         </div>
       )}

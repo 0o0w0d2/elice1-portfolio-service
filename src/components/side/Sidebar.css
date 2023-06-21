@@ -7,13 +7,16 @@
 
 .sidebar {
     position: fixed;
-    bottom: 185px;
+    bottom: 190px;
     right: 25px;
     width: 80px;
     height: 30vh;
     z-index: 9999;
     background-color:rgba(0, 73, 0, 0.3);
-    border-radius: 10%;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 15px 20%;
+    border-bottom-left-radius: 15px 20%;
     flex-direction: column;
     display: flex;
     align-items: center;
@@ -22,7 +25,15 @@
 }
 .sidebar div {
     font-family: 'RixYeoljeongdo_Regular';
-    cursor: pointer;
+    cursor: default;
+}
+
+.sidebarText {
+    transition: transform 0.3s ease-out;
+}
+
+.sidebarText:hover {
+    transform: scale(1.1);
 }
 
 .sidebarButton {
@@ -39,6 +50,10 @@
     font-family: 'RixYeoljeongdo_Regular';
     font-size: 25px;
     padding: 0;
-    cursor: pointer;
+    cursor: default;
+    transition: transform 0.3s ease-out;
 }
 
+.sidebarButton:hover {
+    transform: scale(1.1);
+  }

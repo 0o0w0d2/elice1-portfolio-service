@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Grid } from '@mui/material';
+import { Typography, Grid } from '@mui/material';
 import { get, post, patch, delete as del } from '../../api';
 import ProjectCard from './ProjectCard';
 import CreateProjectButton from './CreateProjectButton';
@@ -102,7 +102,7 @@ const ProjectList = ({ portfolioOwnerId, isEditable }) => {
 
   const handleOpenUpdate = (_id) => {
     setSelectedProjectId(_id);
-    console.log('Update clicked for project:', _id);
+    // console.log('Update clicked for project:', _id);
     setUpdateOpen(true);
   };
 
@@ -118,7 +118,7 @@ const ProjectList = ({ portfolioOwnerId, isEditable }) => {
   };
 
   const handleOpenDelete = (_id) => {
-    console.log('Delete clicked for project:', _id);
+    // console.log('Delete clicked for project:', _id);
   };
 
   const handleUpdateSubmit = async (_id, updatedProject) => {
@@ -154,12 +154,12 @@ const ProjectList = ({ portfolioOwnerId, isEditable }) => {
   };
 
   return (
-    <Box sx={{width:1050}}>
-      <Typography className="modelTitle" variant="h4">
+    <div className='pro-box'>
+      <Typography className='modelTitle' variant='h4'>
         프로젝트
       </Typography>
       {projects.length === 0 && (
-        <Typography variant="body2">
+        <Typography variant='body2'>
           등록된 프로젝트 내용이 없습니다.
           <br />
           <br />
@@ -167,7 +167,7 @@ const ProjectList = ({ portfolioOwnerId, isEditable }) => {
         </Typography>
       )}
       {projects.length > 0 && (
-        <Grid container spacing={2} key="project-grid">
+        <Grid container spacing={2} key='project-grid'>
           {projects.map((project) => (
             <Grid item key={project._id} xs={12} sm={6} md={4}>
               <ProjectCard
@@ -182,12 +182,12 @@ const ProjectList = ({ portfolioOwnerId, isEditable }) => {
           ))}
         </Grid>
       )}
-      <Box mt={2}>
+      <div>
         <CreateProjectButton
           onClick={handleOpenCreate}
           isEditable={isEditable}
         />
-      </Box>
+      </div>
       <CreateProjectDialog
         open={createOpen}
         onClose={handleCloseCreate}
@@ -208,7 +208,7 @@ const ProjectList = ({ portfolioOwnerId, isEditable }) => {
         handleSubmit={handleUpdateSubmit}
         checkEmpty={checkEmpty}
       />
-    </Box>
+    </div>
   );
 };
 

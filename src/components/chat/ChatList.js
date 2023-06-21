@@ -2,9 +2,20 @@ import React, { useState, useEffect } from 'react';
 import ChatCard from './ChatCard';
 import * as api from '../../api';
 
-const ChatList = ({ onChatSelect, userId, senderId, receiverId }) => {
+const ChatList = ({
+  onChatSelect,
+  userId,
+  senderId,
+  receiverId,
+  currentUserId,
+  fetchChatHistory,
+  selectedRoomId,
+}) => {
   const [chatRooms, setChatRooms] = useState([]);
   const [counterparts, setCounterparts] = useState({});
+  const [selectedChat, setSelectedChat] = useState(null);
+  const [chatHistory, setChatHistory] = useState([]);
+  const [selectedRoom, setSelectedRoom] = useState(null);
 
   const fetchChatRooms = async (userId) => {
     try {
@@ -65,11 +76,8 @@ const ChatList = ({ onChatSelect, userId, senderId, receiverId }) => {
   //   }
   // };
   const fetchCounterpart = async (roomId, userId) => {
-    console.log(roomId);
-    console.log(userId);
     try {
       const chatRoom = chatRooms.find((chatRoom) => chatRoom.roomId === roomId);
-      // Access the last message in the messages array
       const lastMessage = chatRoom.messages[chatRoom.messages.length - 1];
       const counterpartId =
         lastMessage.senderId === userId
@@ -80,6 +88,16 @@ const ChatList = ({ onChatSelect, userId, senderId, receiverId }) => {
       return counterpart.data.name;
     } catch (error) {
       console.error('Failed to fetch counterpart:', error);
+    }
+  };
+
+  const fetchChatHistoryForList = async (roomId) => {
+    try {
+      const response = await api.get(`chat/${roomId}`);
+      console.log('Response data:', response.data);
+      return response.data.messages;
+    } catch (error) {
+      console.error('Failed to fetch chat history:', error);
     }
   };
 
@@ -102,24 +120,39 @@ const ChatList = ({ onChatSelect, userId, senderId, receiverId }) => {
     updateCounterparts();
   }, [chatRooms]);
 
+  useEffect(() => {
+    if (selectedRoomId) {
+      const room = chatRooms.find((room) => room.roomId === selectedRoomId);
+      setSelectedRoom(room);
+    } else {
+      setSelectedRoom(null);
+    }
+  }, [selectedRoomId, chatRooms]);
   return (
     <div className='chat-list'>
       <ul>
-        {chatRooms.map((chatRoom) => (
-          <ChatCard
-            key={chatRoom.roomId}
-            roomId={chatRoom.roomId}
-            senderId={chatRoom.senderId}
-            senderName={chatRoom.senderName}
-            receiverId={chatRoom.receiverId}
-            receiverName={chatRoom.receiverName}
-            counterpart={counterparts[chatRoom.roomId]}
-            onClick={() => {
-              console.log('Chat room item clicked with roomId:', chatRoom);
-              onChatSelect(chatRoom.roomId);
-            }}
-          />
-        ))}
+        {chatRooms.map((chatRoom) => {
+          return (
+            <ChatCard
+              key={chatRoom.roomId}
+              roomId={chatRoom.roomId}
+              senderId={chatRoom.senderId}
+              senderName={chatRoom.senderName}
+              receiverId={chatRoom.receiverId}
+              receiverName={chatRoom.receiverName}
+              counterpart={counterparts[chatRoom.roomId]}
+              onClick={async () => {
+                onChatSelect(chatRoom.roomId);
+                setSelectedChat(chatRoom.roomId);
+                const fetchedHistory = await fetchChatHistoryForList(
+                  chatRoom.roomId
+                );
+                // onChatSelect(chatRoom.roomId, counterpartId);
+                setChatHistory(chatRoom);
+              }}
+            />
+          );
+        })}
       </ul>
     </div>
   );
